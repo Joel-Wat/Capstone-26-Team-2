@@ -4,7 +4,6 @@
   "description": "Repository for all artefacts and workloads of team 2 of Grand Prix showcase project. \r ----------------------------------------------------------------------------------------------------------------",
   "main": "index.js",
   "type": "module",
-
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint .",
