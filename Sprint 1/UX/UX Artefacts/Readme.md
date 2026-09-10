@@ -111,3 +111,5 @@ The updated wireframes incorporate these clarifications while maintaining consis
 ## Figma
 
 https://www.figma.com/design/kpd3Xetg710lrMz9sOQBBe/UX-Wireframe?node-id=0-1&p=f&t=op1TdvYOrcbwOUKW-0
+
+https://www.figma.com/design/SMHt70rdFa1dILxWsd3Okr/user?node-id=0-1&p=f&t=h7yz006aRUzqmQhK-0
