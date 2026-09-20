@@ -1,6 +1,7 @@
 # Sprint 2 – UX Artefacts
 
 ## UX Designer
+
 Diya Diljith
 
 ## UX Prototype Behaviour Specification
@@ -8,6 +9,7 @@ Diya Diljith
 This artefact documents the expected user behaviour and UX interactions for the Sprint 2 prototype.
 
 It provides developer guidance for:
+
 - Customer and internal-user prototype flows
 - Form validation and feedback
 - Login behaviour
