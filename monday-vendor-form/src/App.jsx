@@ -1,4 +1,4 @@
-import './App.css'
+import "./App.css";
 
 function App() {
   return (
@@ -14,11 +14,7 @@ function App() {
 
           <div className="form-group">
             <label htmlFor="vendor">Enter Vendor</label>
-            <input
-            id="vendor"
-            type="text"
-            placeholder="Enter vendor name"
-            />
+            <input id="vendor" type="text" placeholder="Enter vendor name" />
           </div>
 
           <div className="actions">
@@ -34,7 +30,7 @@ function App() {
         </section>
       </main>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
