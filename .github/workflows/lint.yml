@@ -17,15 +17,19 @@ jobs:
         with:
           node-version: 20
           cache: npm
+          cache-dependency-path: monday-vendor-form/package-lock.json
 
       - name: Install dependencies
+        working-directory: ./monday-vendor-form
         run: npm ci
 
       - name: Run ESLint
+        working-directory: ./monday-vendor-form
         run: npm run lint
 
       - name: Run Prettier
-        run: npm run format:check
+        working-directory: ./monday-vendor-form
+        run: npm run format
 
       - name: Lint YAML
         uses: ibiqlik/action-yamllint@v3
