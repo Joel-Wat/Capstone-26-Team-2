@@ -3,16 +3,12 @@ import "./App.css";
 function App() {
   return (
     <div className="app">
-      <header className="header">
-        <h1>Grand Prix Vendor Form</h1>
-        <p>Manage vendor forms</p>
-      </header>
-
       <main className="content">
         <section className="assessment-card">
-          <h2>Vendor Assessment</h2>
-
-          <div className="form-group">
+          <header className="header">
+            <h1>Grand Prix Vendor Form</h1>
+          </header>
+            <div className="form-group">
             <label htmlFor="vendor">Enter Vendor</label>
             <input id="vendor" type="text" placeholder="Enter vendor name" />
           </div>
