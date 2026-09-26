@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>vendor-form</title>
+
+  <style>
+    body {
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    #root {
+        width: 50%;
+        border: 1px solid;
+        padding: 8px;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+  </style>
+</head>
+
+<body>
+
+<div id="root">
+
+    <h1>GP26 Telecommunications Order Form</h1>
+    <form id="vendorForm">
+
+    <p>
+    <label for="department">AGPC Department</label><br>
+    <select id="department" name="department" required>
+    <option value="">              </option>
+    <option value="Option 1">Option 1</option>
+    <option value="Option 2">Option 2</option>
+    <option value="Option 3">Option 3</option>
+    </select>
+    </p>
+
+    <p>
+    <label for="emac-number">EMAC Number *</label>
+    <input
+        type="text"
+        id="emac-number"
+        name="emacNumber"
+        required>
+    </p>
+
+    <p>
+    <label for="emac-facility-name">EMAC/Facility Name *</label>
+    <input
+        type="text"
+        id="emac-facility-name"
+        name="facilityName"
+        required>
+    </p>
+
+    <p>
+    <label for="connection-date">Required Connection Date *</label>
+    <input
+        type="date"
+        id="connection-date"
+        name="connectionDate"
+        placeholder="dd/mm/yyyy"
+        required>
+    </p>
+
+    <p>
+    <label for="disconnection-date">Required Disconnection Date *</label>
+    <input
+        type="date"
+        id="disconnection-date"
+        name="disconnectionDate"
+        placeholder="dd/mm/yyyy"
+        required>
+    </p>
+
+    <button type="submit">Submit</button>
+
+  </form>
+
+</div>
+
+<script>
+    //script to hold all form data to be sent to api - currently not hooked up, just storing values
+    const formData = {
+        department: document.getElementById("department").value,
+        emacNumber: document.getElementById("emac-number").value,
+        facilityName: document.getElementById("emac-facility-name").value,
+        connectionDate: document.getElementById("connection-date").value,
+        disconnectionDate: document.getElementById("disconnection-date").value
+    };
+</script>
+
+</body>
+</html>
