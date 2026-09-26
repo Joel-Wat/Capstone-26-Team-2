@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>vendor-form</title>
+    <style>
+      body { 
+        margin: 0; 
+        min-height: 100vh;
+        display: flex;
+        justify-content: flex-end;
+      }
+
+      #root {
+        width: 50%;
+        border: 1px solid;
+        padding: 8px;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+    </style>
+  </head>
+<body>
+<div id="root">
+  <h1>GP26<br>DYNAMIC FORM</h1>
+  <form id="vendorForm">
+    <p>
+      <label for="name">Contact Name *</label><br>
+      <input id="name" type="text">
+    </p>
+    <p>
+      <label for="phone">Contact Number *</label><br>
+      <input id="phone" type="text">
+    </p>
+    <p>
+      <label for="email">Email Address *</label><br>
+      <input id="email" type="text">
+    </p>
+    <p>
+      <label for="service">Select a service *</label><br>
+      <input id="service" list="services" placeholder="Search">
+      <datalist id="services">
+        <option value="Telecommunications">
+        <option value="Printer & Equipment">
+        <option value="Event Technology">
+      </datalist>
+    </p>
+    <p><button type="submit">Continue</button></p>
+  </form>
+</div>
+
+    <!-- <script type="module" src="/src/main.jsx"></script> -->
+    <script>
+      const form = document.getElementById("vendorForm");
+      const service = document.getElementById("service");
+
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+
+        const selectedService = service.value;
+
+        if (selectedService === "Telecommunications") {
+          window.location.href = "telecom.html";
+        }
+        else if (selectedService === "Printer & Equipment") {
+          window.location.href = "printer.html";
+        }
+        else if (selectedService === "Event Technology") {
+          window.location.href = "tech.html";
+        }
+        else {
+          alert("Please select a valid service.");
+        }
+      });
+    </script>
+  </body>
+</html>
