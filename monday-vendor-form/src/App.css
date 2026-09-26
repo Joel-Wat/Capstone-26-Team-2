@@ -1,0 +1,144 @@
+:root {
+  --gp-dark: #2b1c47;
+  --gp-purple: #7b3fc6;
+  --gp-white: #ffffff;
+  --gp-input: #d9d9d9;
+  --gp-error: #ff0000;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.app {
+  min-height: 100vh;
+  background-color: var(--gp-dark);
+  background-image: url("/background.png");
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  color: var(--gp-white);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 45px;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 2.4rem;
+}
+
+.header p {
+  margin-top: 8px;
+  font-size: 1rem;
+}
+.content {
+  min-height: 100vh;
+  display: flex;
+  justify-content: flex-end; 
+  align-items: center;       
+  padding: 40px 5%;
+}
+
+.assessment-card {
+  width: 100%;
+  max-width: 700px;
+  min-height: 430px;
+  padding: 55px 40px;
+  background: var(--gp-dark);
+}
+
+.assessment-card h2 {
+  margin: 0 0 35px;
+  text-align: center;
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.form-group {
+  margin-bottom: 22px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid transparent;
+  background: var(--gp-input);
+  color: var(--gp-dark);
+  font: inherit;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: var(--gp-purple);
+  background: var(--gp-white);
+}
+
+.actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.actions button {
+  padding: 12px 20px;
+  border: 0;
+  background: var(--gp-purple);
+  color: var(--gp-white);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.actions button:hover {
+  filter: brightness(0.9);
+}
+
+.actions .secondary {
+  background: var(--gp-purple);
+}
+
+.status {
+  margin-top: 22px;
+  text-align: center;
+}
+@media (max-width: 768px) {
+  .app,
+  .dynamic-form-page {
+    padding: 20px;
+  }
+
+  .dynamic-form-page {
+    justify-content: center;
+  }
+
+  .assessment-card,
+  .dynamic-form {
+    padding: 25px 20px;
+  }
+
+  .header h1 {
+    font-size: 2rem;
+  }
+
+  .actions {
+    flex-direction: column;
+  }
+
+  .actions button,
+  .dynamic-form .form-button {
+    width: 100%;
+  }
+}
