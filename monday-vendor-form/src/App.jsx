@@ -8,7 +8,7 @@ function App() {
           <header className="header">
             <h1>Grand Prix Vendor Form</h1>
           </header>
-            <div className="form-group">
+          <div className="form-group">
             <label htmlFor="vendor">Enter Vendor</label>
             <input id="vendor" type="text" placeholder="Enter vendor name" />
           </div>
