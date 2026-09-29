@@ -4,26 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>vendor-form</title>
-
-  <style>
-    body {
-        margin: 0;
-        min-height: 100vh;
-        display: flex;
-        justify-content: flex-end;
-    }
-
-    #root {
-        width: 50%;
-        border: 1px solid;
-        padding: 8px;
-        box-sizing: border-box;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-    }
-  </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
@@ -34,9 +15,9 @@
     <form id="vendorForm">
 
     <p>
-    <label for="department">AGPC Department</label><br>
+    <label for="department">AGPC Department</label>
     <select id="department" name="department" required>
-    <option value="">              </option>
+    <option value=""></option>
     <option value="Option 1">Option 1</option>
     <option value="Option 2">Option 2</option>
     <option value="Option 3">Option 3</option>
@@ -80,8 +61,8 @@
         placeholder="dd/mm/yyyy"
         required>
     </p>
-
-    <button type="submit">Submit</button>
+    <br>
+    <p class="buttonContainer"><button type="submit">Continue</button></p>
 
   </form>
 

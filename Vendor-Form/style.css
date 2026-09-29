@@ -39,25 +39,24 @@
         line-height: 1.2;
         }
  
+
+
 form p {
   margin: 0 0 20px 0;
 }
  
-label {
+label,select {
   display: block;
   font-size: 18px;
   font-weight: 600;
   color: white;
   margin-bottom: 8px;
+  width: 100%;
+  height: 100%;
 }
- 
-label .required,
-label::after {
-  color: inherit;
-}
- 
-input[type="text"],
-input:not([type]) {
+
+
+input, select{
   width: 100%;
   box-sizing: border-box;
   background-color: #d9d9d9;
@@ -89,4 +88,8 @@ button:hover {
 
 .buttonContainer {
     text-align: center;
+}
+
+value {
+  color: black;
 }
