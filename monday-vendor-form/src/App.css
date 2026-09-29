@@ -39,8 +39,8 @@
 .content {
   min-height: 100vh;
   display: flex;
-  justify-content: flex-end; 
-  align-items: center;       
+  justify-content: flex-end;
+  align-items: center;
   padding: 40px 5%;
 }
 

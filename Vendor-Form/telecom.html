@@ -7,12 +7,34 @@
     <link rel="stylesheet" href="style.css">
 </head>
 
-<body>
+  <body>
+    <div id="root">
+      <h1>GP26 Telecommunications Order Form</h1>
+      <form id="vendorForm">
+        <p>
+          <label for="department">AGPC Department</label><br />
+          <select id="department" name="department" required>
+            <option value=""></option>
+            <option value="Option 1">Option 1</option>
+            <option value="Option 2">Option 2</option>
+            <option value="Option 3">Option 3</option>
+          </select>
+        </p>
 
-<div id="root">
+        <p>
+          <label for="emac-number">EMAC Number *</label>
+          <input type="text" id="emac-number" name="emacNumber" required />
+        </p>
 
-    <h1>GP26 Telecommunications Order Form</h1>
-    <form id="vendorForm">
+        <p>
+          <label for="emac-facility-name">EMAC/Facility Name *</label>
+          <input
+            type="text"
+            id="emac-facility-name"
+            name="facilityName"
+            required
+          />
+        </p>
 
     <p>
     <label for="department">AGPC Department</label>
@@ -24,23 +46,20 @@
     </select>
     </p>
 
-    <p>
-    <label for="emac-number">EMAC Number *</label>
-    <input
-        type="text"
-        id="emac-number"
-        name="emacNumber"
-        required>
-    </p>
+        <p>
+          <label for="disconnection-date">Required Disconnection Date *</label>
+          <input
+            type="date"
+            id="disconnection-date"
+            name="disconnectionDate"
+            placeholder="dd/mm/yyyy"
+            required
+          />
+        </p>
 
-    <p>
-    <label for="emac-facility-name">EMAC/Facility Name *</label>
-    <input
-        type="text"
-        id="emac-facility-name"
-        name="facilityName"
-        required>
-    </p>
+        <button type="submit">Submit</button>
+      </form>
+    </div>
 
     <p>
     <label for="connection-date">Required Connection Date *</label>
@@ -75,9 +94,8 @@
         emacNumber: document.getElementById("emac-number").value,
         facilityName: document.getElementById("emac-facility-name").value,
         connectionDate: document.getElementById("connection-date").value,
-        disconnectionDate: document.getElementById("disconnection-date").value
-    };
-</script>
-
-</body>
+        disconnectionDate: document.getElementById("disconnection-date").value,
+      };
+    </script>
+  </body>
 </html>
