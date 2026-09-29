@@ -46,8 +46,7 @@ function App() {
     }
 
     //THIS WILL BE CHANGED FROM LOCAL HOST TO EXTERNAL HOSTING PLATFORM
-    const link = `http://localhost:5174/form/${token}`;
-
+    const link = `http://localhost:5174/?token=${token}`;
     setVendorFormLink(link);
   };
 

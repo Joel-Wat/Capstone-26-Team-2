@@ -40,17 +40,25 @@
       const form = document.getElementById("vendorForm");
       const service = document.getElementById("service");
 
+      const params = new URLSearchParams(window.location.search);
+      const token = params.get("token");
+
       form.addEventListener("submit", (event) => {
         event.preventDefault();
+
+        if (!token) {
+          alert("Invalid form link.");
+          return;
+        }
 
         const selectedService = service.value;
 
         if (selectedService === "Telecommunications") {
-          window.location.href = "telecom.html";
+          window.location.href = `telecom.html?token=${token}`;
         } else if (selectedService === "Printer & Equipment") {
-          window.location.href = "printer.html";
+          window.location.href = `printer.html?token=${token}`;
         } else if (selectedService === "Event Technology") {
-          window.location.href = "tech.html";
+          window.location.href = `tech.html?token=${token}`;
         } else {
           alert("Please select a valid service.");
         }
