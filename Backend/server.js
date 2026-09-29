@@ -38,7 +38,7 @@ app.post("/api/forms", (req, res) => {
 
   const form = {
     vendorName,
-    status: "not_started",
+    status: "Form Created",
     answers: null,
   };
 
