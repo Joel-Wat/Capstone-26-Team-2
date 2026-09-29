@@ -11,10 +11,19 @@ body {
   background-image: url("public/background.png");
   background-size: cover;
   margin: 0;
-  min-height: 100vh;
   display: flex;
-  justify-content: flex-end;
+  min-height: 100vh;
   font-family: Arial, Helvetica, sans-serif;
+}
+
+.formPage{
+  justify-content: flex-end;
+}
+
+.confPage{
+  justify-content: center;
+  align-items: center;
+
 }
 
 #root {
@@ -24,12 +33,19 @@ body {
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: stretch;
   margin-right: 2%;
   margin-top: 3%;
   margin-bottom: 3%;
   border-radius: 10px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.submitPanel{
+  height: 40vh;
+  width: 60vw !important;
 }
 
 h1 {
@@ -58,8 +74,7 @@ label::after {
   color: inherit;
 }
 
-input[type="text"],
-input:not([type]) {
+input, select{
   width: 100%;
   box-sizing: border-box;
   background-color: #d9d9d9;
@@ -71,7 +86,7 @@ input:not([type]) {
 }
 
 button {
-  width: 60%;
+  width: 40%;
   justify-content: center;
   background-color: #7a4fd6;
   color: white;
@@ -84,10 +99,18 @@ button {
   transition: background-color 0.15s ease;
 }
 
+.back{
+    background-color: #524f59;
+}
+
+
 button:hover {
   background-color: #8f63e8;
 }
 
 .buttonContainer {
   text-align: center;
+  display: flex;
+  justify-content:center;
+  gap: 10%;
 }
