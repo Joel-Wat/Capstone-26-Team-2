@@ -82,14 +82,56 @@
     </div>
 
     <script>
-      //script to hold all form data to be sent to api - currently not hooked up, just storing values
-      const formData = {
-        department: document.getElementById("department").value,
-        emacNumber: document.getElementById("emac-number").value,
-        facilityName: document.getElementById("emac-facility-name").value,
-        connectionDate: document.getElementById("connection-date").value,
-        disconnectionDate: document.getElementById("disconnection-date").value,
-      };
+      const form = document.getElementById("vendorForm");
+
+      const params = new URLSearchParams(window.location.search);
+      const token = params.get("token");
+
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        if (!token) {
+          alert("Invalid form link.");
+          return;
+        }
+
+        const answers = {
+          department: document.getElementById("department").value,
+          emacNumber: document.getElementById("emac-number").value,
+          facilityName: document.getElementById("emac-facility-name").value,
+          connectionDate: document.getElementById("connection-date").value,
+          disconnectionDate:
+            document.getElementById("disconnection-date").value,
+        };
+
+        try {
+          const response = await fetch(
+            `http://localhost:3000/api/forms/${token}/submit`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                answers: answers,
+              }),
+            },
+          );
+
+          const data = await response.json();
+
+          if (!response.ok) {
+            alert(data.error);
+            return;
+          }
+
+          console.log("Form submitted:", data);
+          alert("Form submitted successfully.");
+        } catch (error) {
+          console.error("Error submitting form:", error);
+          alert("Could not connect to the backend.");
+        }
+      });
     </script>
   </body>
 </html>
