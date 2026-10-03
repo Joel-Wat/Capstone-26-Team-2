@@ -13,15 +13,15 @@
       <form id="vendorForm">
         <p>
           <label for="name">Contact Name *</label>
-          <input id="name" type="text" />
+          <input id="name" type="text" required />
         </p>
         <p>
           <label for="phone">Contact Number *</label>
-          <input id="phone" type="text" />
+          <input id="phone" type="text" required />
         </p>
         <p>
           <label for="email">Email Address *</label>
-          <input id="email" type="text" />
+          <input id="email" type="text" required />
         </p>
         <p>
           <label for="service">Select a service *</label>
@@ -37,32 +37,44 @@
     </div>
 
     <script>
-      const form = document.getElementById("vendorForm");
-      const service = document.getElementById("service");
+  const form = document.getElementById("vendorForm");
+  const service = document.getElementById("service");
 
-      const params = new URLSearchParams(window.location.search);
-      const token = params.get("token");
+  const params = new URLSearchParams(window.location.search);
+  const token = params.get("token");
 
-      form.addEventListener("submit", (event) => {
-        event.preventDefault();
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
 
-        if (!token) {
-          alert("Invalid form link.");
-          return;
-        }
+    if (!token) {
+      alert("Invalid form link.");
+      return;
+    }
 
-        const selectedService = service.value;
+    const selectedService = service.value;
 
-        if (selectedService === "Telecommunications") {
-          window.location.href = `telecom.html?token=${token}`;
-        } else if (selectedService === "Printer & Equipment") {
-          window.location.href = `printer.html?token=${token}`;
-        } else if (selectedService === "Event Technology") {
-          window.location.href = `tech.html?token=${token}`;
-        } else {
-          alert("Please select a valid service.");
-        }
-      });
-    </script>
+    const contactDetails = {
+      contactName: document.getElementById("name").value,
+      phone: document.getElementById("phone").value,
+      email: document.getElementById("email").value,
+      service: selectedService,
+    };
+
+    sessionStorage.setItem(
+      "contactDetails",
+      JSON.stringify(contactDetails),
+    );
+
+    if (selectedService === "Telecommunications") {
+      window.location.href = `telecom.html?token=${token}`;
+    } else if (selectedService === "Printer & Equipment") {
+      window.location.href = `printer.html?token=${token}`;
+    } else if (selectedService === "Event Technology") {
+      window.location.href = `tech.html?token=${token}`;
+    } else {
+      alert("Please select a valid service.");
+    }
+  });
+</script>
   </body>
 </html>
