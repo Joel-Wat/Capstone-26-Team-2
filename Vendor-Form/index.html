@@ -37,44 +37,44 @@
     </div>
 
     <script>
-  const form = document.getElementById("vendorForm");
-  const service = document.getElementById("service");
+      const form = document.getElementById("vendorForm");
+      const service = document.getElementById("service");
 
-  const params = new URLSearchParams(window.location.search);
-  const token = params.get("token");
+      const params = new URLSearchParams(window.location.search);
+      const token = params.get("token");
 
-  form.addEventListener("submit", (event) => {
-    event.preventDefault();
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
 
-    if (!token) {
-      alert("Invalid form link.");
-      return;
-    }
+        if (!token) {
+          alert("Invalid form link.");
+          return;
+        }
 
-    const selectedService = service.value;
+        const selectedService = service.value;
 
-    const contactDetails = {
-      contactName: document.getElementById("name").value,
-      phone: document.getElementById("phone").value,
-      email: document.getElementById("email").value,
-      service: selectedService,
-    };
+        const contactDetails = {
+          contactName: document.getElementById("name").value,
+          phone: document.getElementById("phone").value,
+          email: document.getElementById("email").value,
+          service: selectedService,
+        };
 
-    sessionStorage.setItem(
-      "contactDetails",
-      JSON.stringify(contactDetails),
-    );
+        sessionStorage.setItem(
+          "contactDetails",
+          JSON.stringify(contactDetails),
+        );
 
-    if (selectedService === "Telecommunications") {
-      window.location.href = `telecom.html?token=${token}`;
-    } else if (selectedService === "Printer & Equipment") {
-      window.location.href = `printer.html?token=${token}`;
-    } else if (selectedService === "Event Technology") {
-      window.location.href = `tech.html?token=${token}`;
-    } else {
-      alert("Please select a valid service.");
-    }
-  });
-</script>
+        if (selectedService === "Telecommunications") {
+          window.location.href = `telecom.html?token=${token}`;
+        } else if (selectedService === "Printer & Equipment") {
+          window.location.href = `printer.html?token=${token}`;
+        } else if (selectedService === "Event Technology") {
+          window.location.href = `tech.html?token=${token}`;
+        } else {
+          alert("Please select a valid service.");
+        }
+      });
+    </script>
   </body>
 </html>

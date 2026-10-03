@@ -49,8 +49,7 @@ app.post("/api/forms", async (req, res) => {
       }
     `;
 
-
-  const response = await fetch("https://api.monday.com/v2", {
+    const response = await fetch("https://api.monday.com/v2", {
       method: "POST",
       headers: {
         Authorization: process.env.MONDAY_API_TOKEN,
@@ -62,42 +61,37 @@ app.post("/api/forms", async (req, res) => {
         variables: {
           boardId: process.env.MONDAY_BOARD_ID,
           vendorName: vendorName,
-        }
+        },
       }),
-  });
-
-  const data = await response.json();
-
-  console.log("Monday response:", data);
-
-  const mondayItemId = data.data.create_item.id;
-
-  const form = {
-    vendorName,
-    status: "Form Created",
-    answers: null,
-    mondayItemId: mondayItemId,
-  };
-
-  forms.set(token, form);
-
-  res.status(201).json({
-    vendorName: form.vendorName,
-    status: form.status,
-    token: token,
     });
-  }
-  
-  catch (error) {
 
-    console.log("creation error:", error)
+    const data = await response.json();
+
+    console.log("Monday response:", data);
+
+    const mondayItemId = data.data.create_item.id;
+
+    const form = {
+      vendorName,
+      status: "Form Created",
+      answers: null,
+      mondayItemId: mondayItemId,
+    };
+
+    forms.set(token, form);
+
+    res.status(201).json({
+      vendorName: form.vendorName,
+      status: form.status,
+      token: token,
+    });
+  } catch (error) {
+    console.log("creation error:", error);
 
     return res.status(500).json({
-      error: "Couldn't connect to Monday"
+      error: "Couldn't connect to Monday",
     });
   }
-
-
 });
 
 /* Second API for loading the form using GET  */
@@ -110,14 +104,12 @@ app.get("/api/forms/:token", (req, res) => {
     return res.status(404).json({
       error: "Form not found",
     });
-  }
-  
-  else {
+  } else {
     res.status(200).json({
-    vendorName: form.vendorName,
-    status: form.status,
-    token: token,
-    answers: form.answers,
+      vendorName: form.vendorName,
+      status: form.status,
+      token: token,
+      answers: form.answers,
     });
   }
 });
@@ -142,24 +134,23 @@ app.post("/api/forms/:token/submit", async (req, res) => {
   }
 
   try {
-
     const columnValues = {
-    status: {
-      label: "Submitted",
-    },
-    text_mm7sxxyx: answers.service,
-    text_mm7sngar: answers.contactName,
-    text_mm7s2ada: answers.email,
-    text_mm7s22a5: answers.department,
-    text_mm7sgtj: answers.facilityName,
-    numeric_mm7sys6v: Number(answers.phone),
-    numeric_mm7s3fk7: Number(answers.emacNumber),
-    date_mm7sva3c: {
-      date: answers.connectionDate,
-    },
-    date_mm7sf00s: {
-      date: answers.disconnectionDate,
-    },
+      status: {
+        label: "Submitted",
+      },
+      text_mm7sxxyx: answers.service,
+      text_mm7sngar: answers.contactName,
+      text_mm7s2ada: answers.email,
+      text_mm7s22a5: answers.department,
+      text_mm7sgtj: answers.facilityName,
+      numeric_mm7sys6v: Number(answers.phone),
+      numeric_mm7s3fk7: Number(answers.emacNumber),
+      date_mm7sva3c: {
+        date: answers.connectionDate,
+      },
+      date_mm7sf00s: {
+        date: answers.disconnectionDate,
+      },
     };
 
     const mutation = `
@@ -187,18 +178,17 @@ app.post("/api/forms/:token/submit", async (req, res) => {
           boardId: process.env.MONDAY_BOARD_ID,
           itemId: form.mondayItemId,
           columnValues: JSON.stringify(columnValues),
-        }
+        },
       }),
-  });
+    });
 
     const data = await response.json();
-    
+
     console.log("Monday submission response:", data);
 
     if (data.errors) {
       throw new Error(JSON.stringify(data.errors));
     }
-
 
     form.answers = answers;
     form.status = "submitted";
@@ -208,21 +198,14 @@ app.post("/api/forms/:token/submit", async (req, res) => {
       status: form.status,
       answers: form.answers,
     });
+  } catch (error) {
+    console.error("Monday submission error:", error);
 
-  
-
-
-} catch (error) {
-  console.error("Monday submission error:", error);
-
-  return res.status(500).json({
-    error: "Could not update Monday",
-  });
-}
+    return res.status(500).json({
+      error: "Could not update Monday",
+    });
+  }
 });
-
-
-
 
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! MONDAY API TESTS, WILL REMOVE/COMMENT OUT !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
@@ -267,16 +250,16 @@ app.get("/api/monday/board", async (req, res) => {
 });
 
 app.post("/api/monday/test-item", async (req, res) => {
-try{
-  const { vendorName } = req.body;
+  try {
+    const { vendorName } = req.body;
 
-  if (!vendorName) {
-    return res.status(400).json({
-      error: "Vendor name is required",
-    });
-  }
+    if (!vendorName) {
+      return res.status(400).json({
+        error: "Vendor name is required",
+      });
+    }
 
-  const mutation = `
+    const mutation = `
       mutation ($boardId: ID! , $vendorName: String! ){
         create_item(
         board_id: $boardId
@@ -288,8 +271,7 @@ try{
       }
     `;
 
-
-  const response = await fetch("https://api.monday.com/v2", {
+    const response = await fetch("https://api.monday.com/v2", {
       method: "POST",
       headers: {
         Authorization: process.env.MONDAY_API_TOKEN,
@@ -301,28 +283,25 @@ try{
         variables: {
           boardId: process.env.MONDAY_BOARD_ID,
           vendorName: vendorName,
-        }
+        },
       }),
-  });
+    });
 
-  const data = await response.json();
+    const data = await response.json();
 
-  res.json(data);
-
-}
-catch (error) {
+    res.json(data);
+  } catch (error) {
     console.error("Monday API error:", error);
 
     res.status(500).json({
       error: "Could not connect to Monday API",
     });
-}
+  }
 });
 
 app.post("/api/monday/test-status", async (req, res) => {
   try {
-
-const mutation = `
+    const mutation = `
   mutation ($boardId: ID! , $itemId: ID!, $columnValues: JSON! ) {
     change_multiple_column_values(
       board_id: $boardId
@@ -334,13 +313,13 @@ const mutation = `
   }
 `;
 
-const columnValues = {
-  status: {
-    label: "Submitted",
-  },
-};
+    const columnValues = {
+      status: {
+        label: "Submitted",
+      },
+    };
 
-const response = await fetch("https://api.monday.com/v2", {
+    const response = await fetch("https://api.monday.com/v2", {
       method: "POST",
       headers: {
         Authorization: process.env.MONDAY_API_TOKEN,
@@ -353,16 +332,13 @@ const response = await fetch("https://api.monday.com/v2", {
           boardId: process.env.MONDAY_BOARD_ID,
           itemId: "2872712364",
           columnValues: JSON.stringify(columnValues),
-        }
+        },
       }),
-  });
+    });
 
-  const data = await response.json();
+    const data = await response.json();
 
-
-return res.json(data);
-
-
+    return res.json(data);
   } catch (error) {
     console.error("Monday status update error:", error);
 

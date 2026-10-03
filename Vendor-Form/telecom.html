@@ -81,42 +81,42 @@
       </form>
     </div>
 
-  <script>
-    const form = document.getElementById("vendorForm");
+    <script>
+      const form = document.getElementById("vendorForm");
 
-    const params = new URLSearchParams(window.location.search);
-    const token = params.get("token");
+      const params = new URLSearchParams(window.location.search);
+      const token = params.get("token");
 
-    form.addEventListener("submit", async (event) => {
-      event.preventDefault();
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
 
-      if (!token) {
-        alert("Invalid form link.");
-        return;
-      }
+        if (!token) {
+          alert("Invalid form link.");
+          return;
+        }
 
-    const contactDetails = JSON.parse(
-    sessionStorage.getItem("contactDetails"),
-    );
+        const contactDetails = JSON.parse(
+          sessionStorage.getItem("contactDetails"),
+        );
 
-if (!contactDetails) {
-  alert("Contact details could not be found.");
-  return;
-}
+        if (!contactDetails) {
+          alert("Contact details could not be found.");
+          return;
+        }
 
-  const answers = {
-  contactName: contactDetails.contactName,
-  phone: contactDetails.phone,
-  email: contactDetails.email,
-  service: contactDetails.service,
+        const answers = {
+          contactName: contactDetails.contactName,
+          phone: contactDetails.phone,
+          email: contactDetails.email,
+          service: contactDetails.service,
 
-  department: document.getElementById("department").value,
-  emacNumber: document.getElementById("emac-number").value,
-  facilityName: document.getElementById("emac-facility-name").value,
-  connectionDate: document.getElementById("connection-date").value,
-  disconnectionDate:
-  document.getElementById("disconnection-date").value,
-  };
+          department: document.getElementById("department").value,
+          emacNumber: document.getElementById("emac-number").value,
+          facilityName: document.getElementById("emac-facility-name").value,
+          connectionDate: document.getElementById("connection-date").value,
+          disconnectionDate:
+            document.getElementById("disconnection-date").value,
+        };
 
         try {
           const response = await fetch(
