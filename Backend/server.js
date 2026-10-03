@@ -123,7 +123,7 @@ app.get("/api/forms/:token", (req, res) => {
 });
 
 //Third API for posting the form to the user
-app.post("/api/forms/:token/submit", (req, res) => {
+app.post("/api/forms/:token/submit", async (req, res) => {
   const { token } = req.params;
   const form = forms.get(token);
 
@@ -141,14 +141,84 @@ app.post("/api/forms/:token/submit", (req, res) => {
     });
   }
 
-  form.answers = answers;
-  form.status = "submitted";
+  try {
 
-  res.status(200).json({
-    vendorName: form.vendorName,
-    status: form.status,
-    answers: form.answers,
+    const columnValues = {
+    status: {
+      label: "Submitted",
+    },
+    text_mm7sxxyx: answers.service,
+    text_mm7sngar: answers.contactName,
+    text_mm7s2ada: answers.email,
+    text_mm7s22a5: answers.department,
+    text_mm7sgtj: answers.facilityName,
+    numeric_mm7sys6v: Number(answers.phone),
+    numeric_mm7s3fk7: Number(answers.emacNumber),
+    date_mm7sva3c: {
+      date: answers.connectionDate,
+    },
+    date_mm7sf00s: {
+      date: answers.disconnectionDate,
+    },
+    };
+
+    const mutation = `
+      mutation ($boardId: ID!, $itemId: ID!, $columnValues: JSON!) {
+        change_multiple_column_values(
+          board_id: $boardId
+          item_id: $itemId
+          column_values: $columnValues
+        ) {
+        id
+      }
+    }
+  `;
+
+    const response = await fetch("https://api.monday.com/v2", {
+      method: "POST",
+      headers: {
+        Authorization: process.env.MONDAY_API_TOKEN,
+        "Content-Type": "application/json",
+        "API-Version": "2026-07",
+      },
+      body: JSON.stringify({
+        query: mutation,
+        variables: {
+          boardId: process.env.MONDAY_BOARD_ID,
+          itemId: form.mondayItemId,
+          columnValues: JSON.stringify(columnValues),
+        }
+      }),
   });
+
+    const data = await response.json();
+    
+    console.log("Monday submission response:", data);
+
+    if (data.errors) {
+      throw new Error(JSON.stringify(data.errors));
+    }
+
+
+    form.answers = answers;
+    form.status = "submitted";
+
+    return res.status(200).json({
+      vendorName: form.vendorName,
+      status: form.status,
+      answers: form.answers,
+    });
+
+  
+
+
+} catch (error) {
+  console.error("Monday submission error:", error);
+
+  return res.status(500).json({
+    error: "Could not update Monday",
+  });
+}
 });
 
 
