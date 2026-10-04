@@ -114,6 +114,40 @@
   margin-top: 22px;
   text-align: center;
 }
+.vendor-link {
+  margin-top: 22px;
+}
+
+.vendor-link strong {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.vendor-link p {
+  width: 100%;
+  margin: 0;
+  padding: 12px;
+  background: var(--gp-input);
+  border: 2px solid transparent;
+  overflow-wrap: anywhere;
+}
+
+.vendor-link a {
+  color: var(--gp-dark);
+  font-size: 0.95rem;
+  text-decoration: none;
+}
+
+.vendor-link p:hover {
+  border-color: var(--gp-purple);
+  background: var(--gp-white);
+}
+
+.vendor-link a:hover {
+  text-decoration: underline;
+}
 @media (max-width: 768px) {
   .app,
   .dynamic-form-page {
