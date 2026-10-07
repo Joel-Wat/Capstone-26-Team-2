@@ -67,7 +67,8 @@ app.post("/api/forms", async (req, res) => {
 
     const data = await response.json();
 
-    console.log("Monday response:", data);
+    //Testing log
+    /* console.log("Monday response:", data); */
 
     const mondayItemId = data.data.create_item.id;
 
@@ -184,7 +185,8 @@ app.post("/api/forms/:token/submit", async (req, res) => {
 
     const data = await response.json();
 
-    console.log("Monday submission response:", data);
+    //Testing logs
+    /* console.log("Monday submission response:", data); */
 
     if (data.errors) {
       throw new Error(JSON.stringify(data.errors));
@@ -209,6 +211,7 @@ app.post("/api/forms/:token/submit", async (req, res) => {
 
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! MONDAY API TESTS, WILL REMOVE/COMMENT OUT !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
+/*
 app.get("/api/monday/board", async (req, res) => {
   try {
     const query = `
@@ -346,7 +349,7 @@ app.post("/api/monday/test-status", async (req, res) => {
       error: "Could not update Monday item",
     });
   }
-});
+}); */
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
