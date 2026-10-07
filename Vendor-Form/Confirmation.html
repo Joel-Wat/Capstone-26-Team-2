@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>vendor-form</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body class="confPage">
+    <div id="root">
+      <h1 id="pageTitle">Review</h1>
+
+      <div id="summary"></div>
+
+      <p class="buttonContainer">
+        <button class="back" type="button" id="backBtn">Back</button>
+        <button class="fin" type="button" id="submitBtn">Submit</button>
+      </p>
+    </div>
+
+    <script>
+      const summary = document.getElementById('summary');
+      const submitBtn = document.getElementById('submitBtn');
+
+        const data = JSON.parse(sessionStorage.getItem('vendorForm'));
+
+  if (!data) {
+    summary.textContent = 'No form data found.';
+    submitBtn.disabled = true;
+  } else {
+    for (const [key, value] of Object.entries(data)) {
+      const p = document.createElement('p');
+      const labelEl = document.createElement('label');
+      const valueEl = document.createElement('label');
+
+      labelEl.textContent = key;
+      valueEl.textContent = value;
+
+      p.append(labelEl, valueEl);
+      summary.append(p);
+    }
+  }
+      // Sends to user back to the page they came from if they click the back button
+    document.getElementById('backBtn').addEventListener('click', () => {
+        history.back();
+    });
+
+  submitBtn.addEventListener('click', () => {
+    sessionStorage.removeItem('vendorForm');
+    window.location.href = 'submit.html';
+  });
+      
+    </script>
+  </body>
+</html>

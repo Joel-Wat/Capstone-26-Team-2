@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>vendor-form</title>
+
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body class = "formPage">
+    <div id="root">
+      <h1>GP26 Printers</h1>
+      <form id="vendorForm">
+        <p>
+          <label for="emac-number">EMAC Number *</label>
+          <input type="text" id="emac-number" name="emacNumber" required />
+        </p>
+
+        <p class="buttonContainer"><button onclick="window.location.href='Confirmation.html'" type="submit">Continue</button></p>
+      </form>
+    </div>
+
+        <script>
+        document.getElementById('vendorForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const data = Object.fromEntries(new FormData(e.target));
+            sessionStorage.setItem('vendorForm', JSON.stringify(data));
+            window.location.href = 'Confirmation.html';
+        });
+    </script>
+  </body>
+</html>
