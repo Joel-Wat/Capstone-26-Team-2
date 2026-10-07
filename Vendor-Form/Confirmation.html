@@ -9,45 +9,48 @@
   </head>
   <body class="confPage">
     <div id="root">
-        <h1>Review</h1>
-            <p>
-                <label>Contact Name</label>
-                <label>Alex</label>
-            </p>    
-            <p>
-                <label>Contact Number</label>
-                <label>123456789</label>
-            </p>
-            <p>
-                <label>Email</label>
-                <label>testuser@gmail.com</label>
-            </p>
-            <p>
-                <label>Service</label>
-                <label>Telcom</label>
-            </p>
-            <p>
-                <label>AGPC department</label>
-                <label>Technology</label>
-            </p>
-            <p>
-                <label>EMAC number</label>
-                <label>XXXXX</label>
-            </p>
-            <p>
-                <label>EMAC/Facility Name</label>
-                <label>XXXXX</label>
-            </p>
-            <p>
-                <label>Required Connection Date</label>
-                <label>15/05/2027</label>
-            </p>
-            <p>
-                <label>Required Disconnection Date</label>
-                <label>27/05/2027</label>
-            </p>
-            <p class="buttonContainer"><button class="back" onclick="window.location.href='telecom.html'" type="submit">Back</button><button onclick="window.location.href='submit.html'" class="fin" type="submit">Submit</button>   </p>
-        
+      <h1 id="pageTitle">Review</h1>
+
+      <div id="summary"></div>
+
+      <p class="buttonContainer">
+        <button class="back" type="button" id="backBtn">Back</button>
+        <button class="fin" type="button" id="submitBtn">Submit</button>
+      </p>
     </div>
-</body>
+
+    <script>
+      const summary = document.getElementById('summary');
+      const submitBtn = document.getElementById('submitBtn');
+
+        const data = JSON.parse(sessionStorage.getItem('vendorForm'));
+
+  if (!data) {
+    summary.textContent = 'No form data found.';
+    submitBtn.disabled = true;
+  } else {
+    for (const [key, value] of Object.entries(data)) {
+      const p = document.createElement('p');
+      const labelEl = document.createElement('label');
+      const valueEl = document.createElement('label');
+
+      labelEl.textContent = key;
+      valueEl.textContent = value;
+
+      p.append(labelEl, valueEl);
+      summary.append(p);
+    }
+  }
+      // Sends to user back to the page they came from if they click the back button
+    document.getElementById('backBtn').addEventListener('click', () => {
+        history.back();
+    });
+
+  submitBtn.addEventListener('click', () => {
+    sessionStorage.removeItem('vendorForm');
+    window.location.href = 'submit.html';
+  });
+      
+    </script>
+  </body>
 </html>
