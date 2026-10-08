@@ -16,14 +16,13 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
-.formPage{
+.formPage {
   justify-content: flex-end;
 }
 
-.confPage{
+.confPage {
   justify-content: center;
   align-items: center;
-
 }
 
 #root {
@@ -43,7 +42,7 @@ body {
   overflow-y: auto;
 }
 
-.submitPanel{
+.submitPanel {
   height: 40vh;
   width: 60vw !important;
 }
@@ -74,7 +73,8 @@ label::after {
   color: inherit;
 }
 
-input, select{
+input,
+select {
   width: 100%;
   box-sizing: border-box;
   background-color: #d9d9d9;
@@ -99,10 +99,9 @@ button {
   transition: background-color 0.15s ease;
 }
 
-.back{
-    background-color: #524f59;
+.back {
+  background-color: #524f59;
 }
-
 
 button:hover {
   background-color: #8f63e8;
@@ -111,6 +110,6 @@ button:hover {
 .buttonContainer {
   text-align: center;
   display: flex;
-  justify-content:center;
+  justify-content: center;
   gap: 10%;
 }

@@ -134,6 +134,21 @@ app.post("/api/forms/:token/submit", async (req, res) => {
     });
   }
 
+  const serviceGroups = {
+    Telecommunications: "topics",
+    "Printer & Equipment": "group_mm7wqep9",
+    "Event Technology": "group_mm7wtyzz",
+    Phones: "group_mm7y54s9",
+  };
+
+  const groupId = serviceGroups[answers.service];
+
+  if (!groupId) {
+    return res.status(400).json({
+      error: "Invalid service selected",
+    });
+  }
+
   try {
     const columnValues = {
       status: {
@@ -142,17 +157,47 @@ app.post("/api/forms/:token/submit", async (req, res) => {
       text_mm7sxxyx: answers.service,
       text_mm7sngar: answers.contactName,
       text_mm7s2ada: answers.email,
-      text_mm7s22a5: answers.department,
-      text_mm7sgtj: answers.facilityName,
-      numeric_mm7sys6v: Number(answers.phone),
-      numeric_mm7s3fk7: Number(answers.emacNumber),
-      date_mm7sva3c: {
-        date: answers.connectionDate,
-      },
-      date_mm7sf00s: {
-        date: answers.disconnectionDate,
-      },
     };
+    if (answers.phone) {
+      columnValues.phone_mm7yvb7b = {
+        phone: answers.phone,
+        countryShortName: "AU",
+      };
+    }
+
+    if (answers.emacNumber) {
+      const emacNumber = Number(answers.emacNumber);
+
+      if (!Number.isFinite(emacNumber)) {
+        return res.status(400).json({
+          error: "EMAC Number must be numeric",
+        });
+      }
+
+      columnValues.numeric_mm7s3fk7 = emacNumber;
+    }
+
+    if (answers.service === "Telecommunications") {
+      columnValues.text_mm7s22a5 = answers.department;
+      columnValues.text_mm7sgtj = answers.facilityName;
+
+      columnValues.date_mm7sva3c = {
+        date: answers.connectionDate,
+      };
+
+      columnValues.date_mm7sf00s = {
+        date: answers.disconnectionDate,
+      };
+    } else if (
+      answers.service === "Phones" ||
+      answers.service === "Event Technology"
+    ) {
+      columnValues.text_mm7ybwdv = answers.emacDescription;
+
+      columnValues.long_text_mm7y1drs = {
+        text: answers.additionalInfo,
+      };
+    }
 
     const mutation = `
       mutation ($boardId: ID!, $itemId: ID!, $columnValues: JSON!) {
@@ -188,8 +233,48 @@ app.post("/api/forms/:token/submit", async (req, res) => {
     //Testing logs
     /* console.log("Monday submission response:", data); */
 
-    if (data.errors) {
-      throw new Error(JSON.stringify(data.errors));
+    if (
+      !response.ok ||
+      data.errors?.length ||
+      !data.data?.change_multiple_column_values?.id
+    ) {
+      throw new Error(JSON.stringify(data));
+    }
+    const groupMutation = `
+  mutation ($itemId: ID!, $groupId: String!) {
+    move_item_to_group(
+      item_id: $itemId
+      group_id: $groupId
+    ) {
+      id
+    }
+  }
+`;
+
+    const groupResponse = await fetch("https://api.monday.com/v2", {
+      method: "POST",
+      headers: {
+        Authorization: process.env.MONDAY_API_TOKEN,
+        "Content-Type": "application/json",
+        "API-Version": "2026-07",
+      },
+      body: JSON.stringify({
+        query: groupMutation,
+        variables: {
+          itemId: form.mondayItemId,
+          groupId: groupId,
+        },
+      }),
+    });
+
+    const groupData = await groupResponse.json();
+
+    if (
+      !groupResponse.ok ||
+      groupData.errors?.length ||
+      !groupData.data?.move_item_to_group?.id
+    ) {
+      throw new Error(JSON.stringify(groupData));
     }
 
     form.answers = answers;
@@ -350,6 +435,53 @@ app.post("/api/monday/test-status", async (req, res) => {
     });
   }
 }); */
+
+app.get("/api/monday/board-structure", async (req, res) => {
+  try {
+    const query = `
+      query ($boardId: [ID!]) {
+        boards(ids: $boardId) {
+          id
+          name
+          groups {
+            id
+            title
+          }
+          columns {
+            id
+            title
+            type
+          }
+        }
+      }
+    `;
+
+    const response = await fetch("https://api.monday.com/v2", {
+      method: "POST",
+      headers: {
+        Authorization: process.env.MONDAY_API_TOKEN,
+        "Content-Type": "application/json",
+        "API-Version": "2026-07",
+      },
+      body: JSON.stringify({
+        query: query,
+        variables: {
+          boardId: [process.env.MONDAY_BOARD_ID],
+        },
+      }),
+    });
+
+    const data = await response.json();
+
+    return res.json(data);
+  } catch (error) {
+    console.error("Board structure error:", error);
+
+    return res.status(500).json({
+      error: "Could not retrieve Monday board structure",
+    });
+  }
+});
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
