@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="style.css" />
   </head>
 
-  <body class = "formPage">
+  <body class="formPage">
     <div id="root">
       <h1>GP26 Telecommunications Order Form</h1>
       <form id="vendorForm">
@@ -59,7 +59,7 @@
           />
         </p>
 
-        <p class="buttonContainer"><button onclick="window.location.href='Confirmation.html'" type="submit">Continue</button></p>
+        <p class="buttonContainer"><button type="submit">Continue</button></p>
       </form>
     </div>
 
@@ -69,7 +69,7 @@
       const params = new URLSearchParams(window.location.search);
       const token = params.get("token");
 
-      form.addEventListener("submit", async (event) => {
+      form.addEventListener("submit", (event) => {
         event.preventDefault();
 
         if (!token) {
@@ -86,47 +86,14 @@
           return;
         }
 
-        const answers = {
-          contactName: contactDetails.contactName,
-          phone: contactDetails.phone,
-          email: contactDetails.email,
-          service: contactDetails.service,
+        const serviceAnswers = Object.fromEntries(new FormData(event.target));
 
-          department: document.getElementById("department").value,
-          emacNumber: document.getElementById("emac-number").value,
-          facilityName: document.getElementById("emac-facility-name").value,
-          connectionDate: document.getElementById("connection-date").value,
-          disconnectionDate:
-            document.getElementById("disconnection-date").value,
-        };
+        sessionStorage.setItem(
+          "serviceAnswers",
+          JSON.stringify(serviceAnswers),
+        );
 
-        try {
-          const response = await fetch(
-            `http://localhost:3000/api/forms/${token}/submit`,
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                answers: answers,
-              }),
-            },
-          );
-
-          const data = await response.json();
-
-          if (!response.ok) {
-            alert(data.error);
-            return;
-          }
-
-          console.log("Form submitted:", data);
-          alert("Form submitted successfully.");
-        } catch (error) {
-          console.error("Error submitting form:", error);
-          alert("Could not connect to the backend.");
-        }
+        window.location.href = `Confirmation.html?token=${encodeURIComponent(token)}`;
       });
     </script>
   </body>

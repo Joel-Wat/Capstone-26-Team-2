@@ -7,7 +7,7 @@
     <title>vendor-form</title>
     <link rel="stylesheet" href="style.css" />
   </head>
-  <body class = "formPage">
+  <body class="formPage">
     <div id="root">
       <h1>GP26<br />DYNAMIC FORM</h1>
       <form id="vendorForm">
@@ -21,11 +21,11 @@
         </p>
         <p>
           <label for="email">Email Address *</label>
-          <input id="email" type="text" required />
+          <input id="email" type="email" required />
         </p>
         <p>
           <label for="service">Select a service *</label>
-          <input id="service" list="services" placeholder="Search" />
+          <input id="service" list="services" placeholder="Search" required />
           <datalist id="services">
             <option value="Telecommunications"></option>
             <option value="Printer & Equipment"></option>
@@ -71,7 +71,9 @@
         } else if (selectedService === "Printer & Equipment") {
           window.location.href = `printer.html?token=${token}`;
         } else if (selectedService === "Event Technology") {
-          window.location.href = `tech.html?token=${token}`;
+          window.location.href = `command.html?token=${token}`;
+        } else if (selectedService === "Phones") {
+          window.location.href = `phone.html?token=${token}`;
         } else {
           alert("Please select a valid service.");
         }

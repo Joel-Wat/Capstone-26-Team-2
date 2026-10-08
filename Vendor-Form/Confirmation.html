@@ -20,37 +20,104 @@
     </div>
 
     <script>
-      const summary = document.getElementById('summary');
-      const submitBtn = document.getElementById('submitBtn');
+      const summary = document.getElementById("summary");
+      const submitBtn = document.getElementById("submitBtn");
 
-        const data = JSON.parse(sessionStorage.getItem('vendorForm'));
+      const params = new URLSearchParams(window.location.search);
+      const token = params.get("token");
 
-  if (!data) {
-    summary.textContent = 'No form data found.';
-    submitBtn.disabled = true;
-  } else {
-    for (const [key, value] of Object.entries(data)) {
-      const p = document.createElement('p');
-      const labelEl = document.createElement('label');
-      const valueEl = document.createElement('label');
+      const contactDetails = JSON.parse(
+        sessionStorage.getItem("contactDetails"),
+      );
 
-      labelEl.textContent = key;
-      valueEl.textContent = value;
+      const serviceAnswers = JSON.parse(
+        sessionStorage.getItem("serviceAnswers"),
+      );
 
-      p.append(labelEl, valueEl);
-      summary.append(p);
-    }
-  }
+      let data;
+
+      //checls if the there is details and answers
+      if (contactDetails && serviceAnswers) {
+        data = {
+          ...contactDetails,
+          ...serviceAnswers,
+        };
+      } else {
+        data = null;
+      }
+
+      //Making the data prettier when shown!
+      const fieldLabels = {
+        contactName: "Contact Name",
+        phone: "Contact Number",
+        email: "Email Address",
+        service: "Service",
+        department: "AGPC Department",
+        emacNumber: "EMAC Number",
+        emacDescription: "EMAC Description",
+        additionalInfo: "Additional Information",
+        facilityName: "EMAC/Facility Name",
+        connectionDate: "Required Connection Date",
+        disconnectionDate: "Required Disconnection Date",
+      };
+
+      //error checker
+      if (!data || !token) {
+        summary.textContent = "Form information or token could not be found.";
+        submitBtn.disabled = true;
+      } else {
+        for (const [key, value] of Object.entries(data)) {
+          const p = document.createElement("p");
+          const labelEl = document.createElement("label");
+          const valueEl = document.createElement("label");
+
+          labelEl.textContent = fieldLabels[key] || key;
+          valueEl.textContent = value;
+
+          p.append(labelEl, valueEl);
+          summary.append(p);
+        }
+      }
       // Sends to user back to the page they came from if they click the back button
-    document.getElementById('backBtn').addEventListener('click', () => {
+      document.getElementById("backBtn").addEventListener("click", () => {
         history.back();
-    });
+      });
 
-  submitBtn.addEventListener('click', () => {
-    sessionStorage.removeItem('vendorForm');
-    window.location.href = 'submit.html';
-  });
-      
+      submitBtn.addEventListener("click", async () => {
+        try {
+          submitBtn.disabled = true;
+
+          const response = await fetch(
+            `http://localhost:3000/api/forms/${encodeURIComponent(token)}/submit`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                answers: data,
+              }),
+            },
+          );
+
+          const result = await response.json();
+
+          if (!response.ok) {
+            alert(result.error || "Could not submit form.");
+            submitBtn.disabled = false;
+            return;
+          }
+
+          sessionStorage.removeItem("contactDetails");
+          sessionStorage.removeItem("serviceAnswers");
+
+          window.location.href = `submit.html?token=${encodeURIComponent(token)}`;
+        } catch (error) {
+          console.error("Error submitting form:", error);
+          alert("Could not connect to the backend.");
+          submitBtn.disabled = false;
+        }
+      });
     </script>
   </body>
 </html>

@@ -8,36 +8,60 @@
     <link rel="stylesheet" href="style.css" />
   </head>
 
-  <body class = "formPage">
+  <body class="formPage">
     <div id="root">
       <h1>GP26 Phone</h1>
       <form id="vendorForm">
         <p>
           <label for="emac-number">EMAC Number *</label>
-          <input type="text" id="emac-number" name="Emac Number: " required />
+          <input type="text" id="emac-number" name="emacNumber" required />
         </p>
         <p>
           <label for="emac-description">EMAC Description *</label>
-          <input type="text" id="emac-description" name="Emac Description: " required />
+          <input
+            type="text"
+            id="emac-description"
+            name="emacDescription"
+            required
+          />
         </p>
         <p>
           <label for="additional-info">Additional Information *</label>
-          <input type="text" id="additional-info" name="Additional Info: " required />
+          <input
+            type="text"
+            id="additional-info"
+            name="additionalInfo"
+            required
+          />
         </p>
         <p class="buttonContainer"><button type="submit">Continue</button></p>
       </form>
     </div>
 
-
     <!-- script here to hold information in sessionStorage to pass to conf page -->
     <script>
-        document.getElementById('vendorForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const data = Object.fromEntries(new FormData(e.target));
-            sessionStorage.setItem('vendorForm', JSON.stringify(data));
-            window.location.href = 'Confirmation.html';
-        });
+      const form = document.getElementById("vendorForm");
+
+      const params = new URLSearchParams(window.location.search);
+      const token = params.get("token");
+
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+
+        if (!token) {
+          alert("Invalid form link.");
+          return;
+        }
+
+        const serviceAnswers = Object.fromEntries(new FormData(event.target));
+
+        sessionStorage.setItem(
+          "serviceAnswers",
+          JSON.stringify(serviceAnswers),
+        );
+
+        window.location.href = `Confirmation.html?token=${encodeURIComponent(token)}`;
+      });
     </script>
-    
   </body>
 </html>
