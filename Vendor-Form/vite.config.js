@@ -1,21 +1,21 @@
-import { defineConfig } from 'vite'
-import { resolve } from 'path'
-import { fileURLToPath } from 'url'
-
-const __dirname = fileURLToPath(new URL('.', import.meta.url))
+import react from "@vitejs/plugin-react";
+import { defineConfig } from "vite";
+import { resolve } from "node:path";
 
 export default defineConfig({
+  plugins: [react()],
+
   build: {
     rollupOptions: {
       input: {
-        main: resolve(__dirname, 'index.html'),
-        command: resolve(__dirname, 'command.html'),
-        confirmation: resolve(__dirname, 'Confirmation.html'),
-        phone: resolve(__dirname, 'phone.html'),
-        printer: resolve(__dirname, 'printer.html'),
-        submit: resolve(__dirname, 'submit.html'),
-        telecom: resolve(__dirname, 'telecom.html'),
+        main: resolve(import.meta.dirname, "index.html"),
+        telecom: resolve(import.meta.dirname, "telecom.html"),
+        phone: resolve(import.meta.dirname, "phone.html"),
+        printer: resolve(import.meta.dirname, "printer.html"),
+        command: resolve(import.meta.dirname, "command.html"),
+        confirmation: resolve(import.meta.dirname, "Confirmation.html"),
+        submit: resolve(import.meta.dirname, "submit.html"),
       },
     },
   },
-})
+});
