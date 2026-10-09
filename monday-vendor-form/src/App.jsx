@@ -12,7 +12,7 @@ function App() {
 
   const createForm = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/forms", {
+      const response = await fetch("https://c1b48-service-36976642-e877d2ab.au.monday.app/api/forms", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -45,8 +45,8 @@ function App() {
       return;
     }
 
-    //THIS WILL BE CHANGED FROM LOCAL HOST TO EXTERNAL HOSTING PLATFORM
-    const link = `http://localhost:5174/?token=${token}`;
+    //FIREBASE CONNNECTION
+    const link = `https://grandprixecosystems.web.app/?token=${token}`;
     setVendorFormLink(link);
   };
 
