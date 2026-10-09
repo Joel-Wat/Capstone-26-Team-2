@@ -111,7 +111,7 @@
           sessionStorage.removeItem("contactDetails");
           sessionStorage.removeItem("serviceAnswers");
 
-          window.location.href = `submit.html?token=${encodeURIComponent(token)}`;
+          window.location.href = `https://grandprixecosystems.web.app/submit.html?token=${encodeURIComponent(token)}`;
         } catch (error) {
           console.error("Error submitting form:", error);
           alert("Could not connect to the backend.");
