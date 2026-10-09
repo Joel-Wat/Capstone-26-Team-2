@@ -4,11 +4,42 @@ import express from "express";
 import cors from "cors";
 import crypto from "crypto";
 import dotenv from "dotenv";
+import { SecretsManager } from "@mondaycom/apps-sdk";
+
 
 dotenv.config();
 
+const secretsManager = new SecretsManager();
+
+const MONDAY_API_TOKEN =
+  secretsManager.get("MONDAY_API_TOKEN") ??
+  process.env.MONDAY_API_TOKEN;
+
+const MONDAY_BOARD_ID =
+  secretsManager.get("MONDAY_BOARD_ID") ??
+  process.env.MONDAY_BOARD_ID;
+
+//Logging for Variables
+/*
+console.log("Monday environment check:", {
+  tokenConfigured: Boolean(process.env.MONDAY_API_TOKEN),
+  boardConfigured: Boolean(process.env.MONDAY_BOARD_ID),
+});
+
+console.log("Monday credentials check:", {
+  tokenExists: Boolean(process.env.MONDAY_API_TOKEN),
+  tokenLength: process.env.MONDAY_API_TOKEN?.length ?? 0,
+  boardIdExists: Boolean(process.env.MONDAY_BOARD_ID),
+}); */
+
+console.log("Monday SDK secrets check:", {
+  tokenConfigured: Boolean(MONDAY_API_TOKEN),
+  boardConfigured: Boolean(MONDAY_BOARD_ID),
+});
+
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8080;
+
 
 app.use(cors());
 app.use(express.json());
@@ -52,25 +83,42 @@ app.post("/api/forms", async (req, res) => {
     const response = await fetch("https://api.monday.com/v2", {
       method: "POST",
       headers: {
-        Authorization: process.env.MONDAY_API_TOKEN,
+        Authorization:  MONDAY_API_TOKEN,
         "Content-Type": "application/json",
         "API-Version": "2026-07",
       },
       body: JSON.stringify({
         query: mutation,
         variables: {
-          boardId: process.env.MONDAY_BOARD_ID,
+          boardId: MONDAY_BOARD_ID,
           vendorName: vendorName,
         },
       }),
     });
 
-    const data = await response.json();
+    
 
     //Testing log
     /* console.log("Monday response:", data); */
 
-    const mondayItemId = data.data.create_item.id;
+    const data = await response.json();
+
+if (
+  !response.ok ||
+  data.errors?.length ||
+  !data.data?.create_item?.id
+) {
+  console.error("Monday create_item failed:", {
+    status: response.status,
+    errors: data.errors,
+    error_code: data.error_code,
+    error_message: data.error_message,
+  });
+
+  throw new Error("Monday could not create the vendor item");
+}
+
+const mondayItemId = data.data.create_item.id;
 
     const form = {
       vendorName,
@@ -214,14 +262,14 @@ app.post("/api/forms/:token/submit", async (req, res) => {
     const response = await fetch("https://api.monday.com/v2", {
       method: "POST",
       headers: {
-        Authorization: process.env.MONDAY_API_TOKEN,
+        Authorization: MONDAY_API_TOKEN,
         "Content-Type": "application/json",
         "API-Version": "2026-07",
       },
       body: JSON.stringify({
         query: mutation,
         variables: {
-          boardId: process.env.MONDAY_BOARD_ID,
+          boardId: MONDAY_BOARD_ID,
           itemId: form.mondayItemId,
           columnValues: JSON.stringify(columnValues),
         },
@@ -254,7 +302,7 @@ app.post("/api/forms/:token/submit", async (req, res) => {
     const groupResponse = await fetch("https://api.monday.com/v2", {
       method: "POST",
       headers: {
-        Authorization: process.env.MONDAY_API_TOKEN,
+        Authorization: MONDAY_API_TOKEN,
         "Content-Type": "application/json",
         "API-Version": "2026-07",
       },
@@ -459,14 +507,14 @@ app.get("/api/monday/board-structure", async (req, res) => {
     const response = await fetch("https://api.monday.com/v2", {
       method: "POST",
       headers: {
-        Authorization: process.env.MONDAY_API_TOKEN,
+        Authorization: MONDAY_API_TOKEN,
         "Content-Type": "application/json",
         "API-Version": "2026-07",
       },
       body: JSON.stringify({
         query: query,
         variables: {
-          boardId: [process.env.MONDAY_BOARD_ID],
+          boardId: [MONDAY_BOARD_ID],
         },
       }),
     });
