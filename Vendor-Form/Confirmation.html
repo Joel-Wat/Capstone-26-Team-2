@@ -88,7 +88,7 @@
           submitBtn.disabled = true;
 
           const response = await fetch(
-            `http://localhost:3000/api/forms/${encodeURIComponent(token)}/submit`,
+            `https://c1b48-service-36976642-e877d2ab.au.monday.app/api/forms/${encodeURIComponent(token)}/submit`,
             {
               method: "POST",
               headers: {
@@ -111,7 +111,7 @@
           sessionStorage.removeItem("contactDetails");
           sessionStorage.removeItem("serviceAnswers");
 
-          window.location.href = `submit.html?token=${encodeURIComponent(token)}`;
+          window.location.href = `https://grandprixecosystems.web.app/submit.html?token=${encodeURIComponent(token)}`;
         } catch (error) {
           console.error("Error submitting form:", error);
           alert("Could not connect to the backend.");

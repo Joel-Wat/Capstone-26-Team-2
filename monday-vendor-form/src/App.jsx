@@ -12,15 +12,18 @@ function App() {
 
   const createForm = async () => {
     try {
-      const response = await fetch("https://c1b48-service-36976642-e877d2ab.au.monday.app/api/forms", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+      const response = await fetch(
+        "https://c1b48-service-36976642-e877d2ab.au.monday.app/api/forms",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            vendorName: vendorName,
+          }),
         },
-        body: JSON.stringify({
-          vendorName: vendorName,
-        }),
-      });
+      );
 
       const data = await response.json();
 

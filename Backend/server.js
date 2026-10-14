@@ -6,18 +6,15 @@ import crypto from "crypto";
 import dotenv from "dotenv";
 import { SecretsManager } from "@mondaycom/apps-sdk";
 
-
 dotenv.config();
 
 const secretsManager = new SecretsManager();
 
 const MONDAY_API_TOKEN =
-  secretsManager.get("MONDAY_API_TOKEN") ??
-  process.env.MONDAY_API_TOKEN;
+  secretsManager.get("MONDAY_API_TOKEN") ?? process.env.MONDAY_API_TOKEN;
 
 const MONDAY_BOARD_ID =
-  secretsManager.get("MONDAY_BOARD_ID") ??
-  process.env.MONDAY_BOARD_ID;
+  secretsManager.get("MONDAY_BOARD_ID") ?? process.env.MONDAY_BOARD_ID;
 
 //Logging for Variables
 /*
@@ -39,7 +36,6 @@ console.log("Monday SDK secrets check:", {
 
 const app = express();
 const PORT = process.env.PORT || 8080;
-
 
 app.use(cors());
 app.use(express.json());
@@ -83,7 +79,7 @@ app.post("/api/forms", async (req, res) => {
     const response = await fetch("https://api.monday.com/v2", {
       method: "POST",
       headers: {
-        Authorization:  MONDAY_API_TOKEN,
+        Authorization: MONDAY_API_TOKEN,
         "Content-Type": "application/json",
         "API-Version": "2026-07",
       },
@@ -96,29 +92,23 @@ app.post("/api/forms", async (req, res) => {
       }),
     });
 
-    
-
     //Testing log
     /* console.log("Monday response:", data); */
 
     const data = await response.json();
 
-if (
-  !response.ok ||
-  data.errors?.length ||
-  !data.data?.create_item?.id
-) {
-  console.error("Monday create_item failed:", {
-    status: response.status,
-    errors: data.errors,
-    error_code: data.error_code,
-    error_message: data.error_message,
-  });
+    if (!response.ok || data.errors?.length || !data.data?.create_item?.id) {
+      console.error("Monday create_item failed:", {
+        status: response.status,
+        errors: data.errors,
+        error_code: data.error_code,
+        error_message: data.error_message,
+      });
 
-  throw new Error("Monday could not create the vendor item");
-}
+      throw new Error("Monday could not create the vendor item");
+    }
 
-const mondayItemId = data.data.create_item.id;
+    const mondayItemId = data.data.create_item.id;
 
     const form = {
       vendorName,
