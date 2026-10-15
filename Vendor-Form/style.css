@@ -1,4 +1,3 @@
-
 :root {
   --gp-dark: #2b1c47;
   --gp-purple: #7b3fc6;
@@ -181,7 +180,6 @@ button:focus-visible {
     padding: 28px 22px;
   }
 }
-
 
 @media (max-width: 768px) {
   html,
