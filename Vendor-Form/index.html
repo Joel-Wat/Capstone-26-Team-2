@@ -44,6 +44,24 @@
       const params = new URLSearchParams(window.location.search);
       const token = params.get("token");
 
+      const savedContactDetails = JSON.parse(
+        sessionStorage.getItem("contactDetails") || "null",
+      );
+
+      if (savedContactDetails) {
+        document.getElementById("name").value =
+          savedContactDetails.contactName || "";
+
+        document.getElementById("phone").value =
+          savedContactDetails.phone || "";
+
+        document.getElementById("email").value =
+          savedContactDetails.email || "";
+
+        document.getElementById("service").value =
+          savedContactDetails.service || "";
+      }
+
       form.addEventListener("submit", (event) => {
         event.preventDefault();
 
