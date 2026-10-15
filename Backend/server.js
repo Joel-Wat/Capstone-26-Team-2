@@ -63,6 +63,7 @@ app.post("/api/forms", async (req, res) => {
 
   const token = crypto.randomBytes(32).toString("hex");
 
+// This creates the form on Monday.com
   try {
     const mutation = `
       mutation ($boardId: ID! , $vendorName: String! ){
@@ -92,8 +93,6 @@ app.post("/api/forms", async (req, res) => {
       }),
     });
 
-    //Testing log
-    /* console.log("Monday response:", data); */
 
     const data = await response.json();
 
@@ -108,13 +107,68 @@ app.post("/api/forms", async (req, res) => {
       throw new Error("Monday could not create the vendor item");
     }
 
+
+
+
+
+    /* This feature is entirely for referncing the form for safekeeping and storage */
+
     const mondayItemId = data.data.create_item.id;
 
+    const referenceNumber = Number(mondayItemId);
+
+    const referenceColumnValues = {
+      numeric_mm85y4vb: referenceNumber,
+    }
+
+
+    const referenceMutation = `
+      mutation ($boardId: ID!, $itemId: ID!, $columnValues: JSON! ){
+        change_multiple_column_values(
+          board_id: $boardId
+          item_id: $itemId
+          column_values: $columnValues
+        ) {
+        id
+        }
+      }
+    `;
+
+  const referenceResponse = await fetch("https://api.monday.com/v2", {
+  method: "POST",
+  headers: {
+    Authorization: MONDAY_API_TOKEN,
+    "Content-Type": "application/json",
+    "API-Version": "2026-07",
+  },
+  body: JSON.stringify({
+    query: referenceMutation,
+    variables: {
+        boardId: MONDAY_BOARD_ID,
+        itemId: mondayItemId,
+        columnValues: JSON.stringify(referenceColumnValues),
+        },
+  }),
+});
+
+  const referenceData = await referenceResponse.json();
+
+  if (
+      !referenceResponse.ok ||
+      referenceData.errors?.length ||
+      !referenceData.data?.change_multiple_column_values?.id) {
+
+      throw new Error("Failed to save form reference number");
+  }
+
+
+  //This is for the backend to store the data between pages
     const form = {
       vendorName,
       status: "Form Created",
       answers: null,
       mondayItemId: mondayItemId,
+      referenceNumber,
     };
 
     forms.set(token, form);
@@ -123,6 +177,7 @@ app.post("/api/forms", async (req, res) => {
       vendorName: form.vendorName,
       status: form.status,
       token: token,
+      referenceNumber,
     });
   } catch (error) {
     console.log("creation error:", error);
@@ -149,6 +204,7 @@ app.get("/api/forms/:token", (req, res) => {
       status: form.status,
       token: token,
       answers: form.answers,
+      referenceNumber: form.referenceNumber,
     });
   }
 });
@@ -166,7 +222,7 @@ app.post("/api/forms/:token/submit", async (req, res) => {
 
   const { answers } = req.body ?? {};
 
-  if (answer == null) {
+  if (answers == null) {
     return res.status(400).json({
       error: "Please answer all required fields",
     });
@@ -202,7 +258,14 @@ app.post("/api/forms/:token/submit", async (req, res) => {
       text_mm7sngar: answers.contactName,
       text_mm7s2ada: answers.email,
     };
+
     if (answers.phone) {
+      const isValidPhone = /^\+?[0-9 ]+$/.test(answers.phone);
+        if (!isValidPhone) {
+          return res.status(400).json({
+          error: "Invalid phone number",
+        })
+      } else
       columnValues.phone_mm7yvb7b = {
         phone: answers.phone,
         countryShortName: "AU",
