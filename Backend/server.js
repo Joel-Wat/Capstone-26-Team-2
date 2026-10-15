@@ -164,12 +164,18 @@ app.post("/api/forms/:token/submit", async (req, res) => {
     });
   }
 
-  const { answers } = req.body;
+  const { answers } = req.body ?? {};
 
-  if (!answers) {
+  if (answer == null) {
     return res.status(400).json({
-      error: "Please Answer all required fields",
+      error: "Please answer all required fields",
     });
+  }
+
+  if (typeof answers !== "object" || Array.isArray(answers)) {
+    return res.status(400).json({
+      error: "Invalid form answers",
+  });
   }
 
   const serviceGroups = {
@@ -203,8 +209,18 @@ app.post("/api/forms/:token/submit", async (req, res) => {
       };
     }
 
-    if (answers.emacNumber) {
-      const emacNumber = Number(answers.emacNumber);
+    let emacNumber = answers.emacNumber;
+      
+      const isValid = /^[0-9]+$/.test(emacNumber);
+
+      if (!isValid){
+        return res.status(400).json({
+          error: "EMAC Number must be numeric",
+        })
+      }
+
+  
+      emacNumber = Number(answers.emacNumber);
 
       if (!Number.isFinite(emacNumber)) {
         return res.status(400).json({
@@ -212,8 +228,9 @@ app.post("/api/forms/:token/submit", async (req, res) => {
         });
       }
 
+      
+
       columnValues.numeric_mm7s3fk7 = emacNumber;
-    }
 
     if (answers.service === "Telecommunications") {
       columnValues.text_mm7s22a5 = answers.department;
