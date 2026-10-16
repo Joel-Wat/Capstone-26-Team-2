@@ -17,7 +17,7 @@
           <input
             type="text"
             id="emac-number"
-            name="emacNumber"
+            name="emacNumber" oninput="this.value = this.value.replace(/[^0-9]/g, '')"
             inputmode="numeric"
             required
             pattern="[0-9]+"
