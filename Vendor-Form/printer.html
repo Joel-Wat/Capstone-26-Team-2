@@ -13,8 +13,8 @@
       <h1>GP26 Printers</h1>
       <form id="vendorForm">
         <p>
-          <label for="emac-number">EMAC Number *</label>
-          <input type="text" id="emac-number" name="emacNumber" required />
+          <label for="emac-number">EMAC Number <span style="color: red;">*</span></label>
+          <input type="text" id="emac-number" name="emacNumber" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required />
         </p>
 
         <p class="buttonContainer"><button onclick="window.location.href='Confirmation.html'" type="submit">Continue</button></p>

@@ -12,26 +12,26 @@
       <h1>GP26<br />DYNAMIC FORM</h1>
       <form id="vendorForm">
         <p>
-          <label for="name">Contact Name *</label>
+          <label for="name">Contact Name <span style="color: red;">*</span></label>
           <input id="name" type="text" />
         </p>
         <p>
-          <label for="phone">Contact Number *</label>
+          <label for="phone">Contact Number <span style="color: red;">*</span></label>
           <input id="phone" type="text" />
         </p>
         <p>
-          <label for="email">Email Address *</label>
+          <label for="email">Email Address <span style="color: red;">*</span></label>
           <input id="email" type="text" />
         </p>
         <p>
-          <label for="service">Select a service *</label>
-          <input id="service" list="services" placeholder="Search" />
-          <datalist id="services">
-            <option value="Telecommunications"></option>
-            <option value="Printer & Equipment"></option>
-            <option value="Event Technology"></option>
-            <option value="Phones"></option>
-          </datalist>
+          <label for="service">Select a service <span style="color: red;">*</span></label>
+          <select id="service" list="services" required>
+            <option value=""></option>
+            <option value="Telecommunications">Telecommunications</option>
+            <option value="Printer & Equipment">Printer & Equipment</option>
+            <option value="Event Technology">Event Technology</option>
+            <option value="Phones">Phones</option>
+          </select>
         </p>
         <p class="buttonContainer"><button type="submit">Continue</button></p>
       </form>
