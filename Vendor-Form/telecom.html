@@ -65,6 +65,16 @@
             required
           />
         </p>
+        <div class="fileUpload">
+          <label for="serviceSketch">Location/Service Sketch</label>
+
+  <input
+    type="file"
+    id="serviceSketch"
+    name="serviceSketch"
+    accept=".png,.jpg,.jpeg,.pdf"
+  />
+</div>
 
         <p class="buttonContainer">
           <button class="back" type="button" id="backBtn">Back</button>
@@ -76,11 +86,43 @@
     <script>
       const form = document.getElementById("vendorForm");
 
+      const fileInput = document.getElementById("serviceSketch");
+
+fileInput.addEventListener("change", () => {
+  const selectedFile = fileInput.files[0];
+
+  //VALIDATION DO NOT REMOVE OR CHANGE
+  const maxFileSize = 5 * 1024 * 1024;
+
+  const allowedTypes = [
+  "image/jpeg",
+  "image/png",
+  "application/pdf",
+];
+
+  if(!selectedFile){
+    return;
+  }
+  else if (selectedFile.size > maxFileSize){
+    alert("File must be smaller than 5 MB");
+    fileInput.value = "";
+    return;
+  }
+
+  else if (!allowedTypes.includes(selectedFile.type)) {
+  alert("Only PNG, JPG and PDF files are allowed");
+  fileInput.value = "";
+  return;
+}
+    
+  console.log("Selected file:", selectedFile);
+});
       const params = new URLSearchParams(window.location.search);
       const token = params.get("token");
 
       document.getElementById("backBtn").addEventListener("click", () => {
         const serviceAnswers = Object.fromEntries(new FormData(form));
+        delete serviceAnswers.serviceSketch;
 
         sessionStorage.setItem(
           "serviceAnswers",
@@ -120,6 +162,7 @@
         }
 
         const serviceAnswers = Object.fromEntries(new FormData(event.target));
+        delete serviceAnswers.serviceSketch;
 
         sessionStorage.setItem(
           "serviceAnswers",
