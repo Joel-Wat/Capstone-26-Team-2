@@ -26,7 +26,14 @@
         <p>
           <label for="emac-number">EMAC Number <span style="color: red;">*</span></label>
           <small style="display: block; color: #888; margin-bottom: 5px; font-size: 0.8em;">Enter the relevant EMAC reference number.</small>
-          <input type="text" id="emac-number" name="emacNumber" required />
+          <input
+            type="text"
+            id="emac-number"
+            name="emacNumber"
+            inputmode="numeric"
+            required
+            pattern="[0-9]+"
+          />
         </p>
 
         <p>

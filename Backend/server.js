@@ -63,7 +63,7 @@ app.post("/api/forms", async (req, res) => {
 
   const token = crypto.randomBytes(32).toString("hex");
 
-// This creates the form on Monday.com
+  // This creates the form on Monday.com
   try {
     const mutation = `
       mutation ($boardId: ID! , $vendorName: String! ){
@@ -93,7 +93,6 @@ app.post("/api/forms", async (req, res) => {
       }),
     });
 
-
     const data = await response.json();
 
     if (!response.ok || data.errors?.length || !data.data?.create_item?.id) {
@@ -107,10 +106,6 @@ app.post("/api/forms", async (req, res) => {
       throw new Error("Monday could not create the vendor item");
     }
 
-
-
-
-
     /* This feature is entirely for referncing the form for safekeeping and storage */
 
     const mondayItemId = data.data.create_item.id;
@@ -119,8 +114,7 @@ app.post("/api/forms", async (req, res) => {
 
     const referenceColumnValues = {
       numeric_mm85y4vb: referenceNumber,
-    }
-
+    };
 
     const referenceMutation = `
       mutation ($boardId: ID!, $itemId: ID!, $columnValues: JSON! ){
@@ -134,35 +128,34 @@ app.post("/api/forms", async (req, res) => {
       }
     `;
 
-  const referenceResponse = await fetch("https://api.monday.com/v2", {
-  method: "POST",
-  headers: {
-    Authorization: MONDAY_API_TOKEN,
-    "Content-Type": "application/json",
-    "API-Version": "2026-07",
-  },
-  body: JSON.stringify({
-    query: referenceMutation,
-    variables: {
-        boardId: MONDAY_BOARD_ID,
-        itemId: mondayItemId,
-        columnValues: JSON.stringify(referenceColumnValues),
+    const referenceResponse = await fetch("https://api.monday.com/v2", {
+      method: "POST",
+      headers: {
+        Authorization: MONDAY_API_TOKEN,
+        "Content-Type": "application/json",
+        "API-Version": "2026-07",
+      },
+      body: JSON.stringify({
+        query: referenceMutation,
+        variables: {
+          boardId: MONDAY_BOARD_ID,
+          itemId: mondayItemId,
+          columnValues: JSON.stringify(referenceColumnValues),
         },
-  }),
-});
+      }),
+    });
 
-  const referenceData = await referenceResponse.json();
+    const referenceData = await referenceResponse.json();
 
-  if (
+    if (
       !referenceResponse.ok ||
       referenceData.errors?.length ||
-      !referenceData.data?.change_multiple_column_values?.id) {
-
+      !referenceData.data?.change_multiple_column_values?.id
+    ) {
       throw new Error("Failed to save form reference number");
-  }
+    }
 
-
-  //This is for the backend to store the data between pages
+    //This is for the backend to store the data between pages
     const form = {
       vendorName,
       status: "Form Created",
@@ -231,7 +224,7 @@ app.post("/api/forms/:token/submit", async (req, res) => {
   if (typeof answers !== "object" || Array.isArray(answers)) {
     return res.status(400).json({
       error: "Invalid form answers",
-  });
+    });
   }
 
   const serviceGroups = {
@@ -261,39 +254,36 @@ app.post("/api/forms/:token/submit", async (req, res) => {
 
     if (answers.phone) {
       const isValidPhone = /^\+?[0-9 ]+$/.test(answers.phone);
-        if (!isValidPhone) {
-          return res.status(400).json({
+      if (!isValidPhone) {
+        return res.status(400).json({
           error: "Invalid phone number",
-        })
+        });
       } else
-      columnValues.phone_mm7yvb7b = {
-        phone: answers.phone,
-        countryShortName: "AU",
-      };
+        columnValues.phone_mm7yvb7b = {
+          phone: answers.phone,
+          countryShortName: "AU",
+        };
     }
 
     let emacNumber = answers.emacNumber;
-      
-      const isValid = /^[0-9]+$/.test(emacNumber);
 
-      if (!isValid){
-        return res.status(400).json({
-          error: "EMAC Number must be numeric",
-        })
-      }
+    const isValid = /^[0-9]+$/.test(emacNumber);
 
-  
-      emacNumber = Number(answers.emacNumber);
+    if (!isValid) {
+      return res.status(400).json({
+        error: "EMAC Number must be numeric",
+      });
+    }
 
-      if (!Number.isFinite(emacNumber)) {
-        return res.status(400).json({
-          error: "EMAC Number must be numeric",
-        });
-      }
+    emacNumber = Number(answers.emacNumber);
 
-      
+    if (!Number.isFinite(emacNumber)) {
+      return res.status(400).json({
+        error: "EMAC Number must be numeric",
+      });
+    }
 
-      columnValues.numeric_mm7s3fk7 = emacNumber;
+    columnValues.numeric_mm7s3fk7 = emacNumber;
 
     if (answers.service === "Telecommunications") {
       columnValues.text_mm7s22a5 = answers.department;

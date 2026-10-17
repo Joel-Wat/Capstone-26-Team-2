@@ -17,7 +17,13 @@
         </p>
         <p>
           <label for="phone">Contact Number <span style="color: red;">*</span></label>
-          <input id="phone" type="text" />
+          <input
+            id="phone"
+            type="text"
+            required
+            pattern="[0-9]+"
+            title="Enter a valid phone number using digits, spaces, and an optional +"
+          />
         </p>
         <p>
           <label for="email">Email Address <span style="color: red;">*</span></label>

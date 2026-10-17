@@ -14,7 +14,14 @@
       <form id="vendorForm">
         <p>
           <label for="emac-number">EMAC Number <span style="color: red;">*</span></label>
-          <input type="text" id="emac-number" name="Emac Number: " required />
+          <input
+            type="text"
+            id="emac-number"
+            name="emacNumber"
+            inputmode="numeric"
+            required
+            pattern="[0-9]+"
+          />
         </p>
         <p>
           <label for="emac-description">EMAC Description <span style="color: red;">*</span></label>
