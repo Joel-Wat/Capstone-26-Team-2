@@ -66,13 +66,14 @@
           />
         </p>
         <div class="fileUpload">
-          <label for="serviceSketch">Location/Service Sketch</label>
+          <label for="serviceSketch">Location/Service Sketch *</label>
 
   <input
     type="file"
     id="serviceSketch"
     name="serviceSketch"
     accept=".png,.jpg,.jpeg,.pdf"
+    required
   />
 </div>
 
@@ -129,6 +130,8 @@ fileInput.addEventListener("change", () => {
           JSON.stringify(serviceAnswers),
         );
 
+        /* const selectedFile = fileInput.files[0]; */
+
         window.location.href = `index.html?token=${encodeURIComponent(token)}`;
       });
 
@@ -144,7 +147,7 @@ fileInput.addEventListener("change", () => {
         }
       }
 
-      form.addEventListener("submit", (event) => {
+      form.addEventListener("submit", async (event) => {
         event.preventDefault();
 
         if (!token) {
@@ -168,6 +171,24 @@ fileInput.addEventListener("change", () => {
           "serviceAnswers",
           JSON.stringify(serviceAnswers),
         );
+
+        const selectedFile = fileInput.files[0];
+
+if (!selectedFile) {
+  alert("Please upload a Location/Service Sketch");
+  return;
+}
+
+const uploadData = new FormData();
+uploadData.append("serviceSketch", selectedFile);
+
+const response = await fetch(
+  `https://c1b48-service-36976642-e877d2ab.au.monday.app/api/forms/${encodeURIComponent(token)}/upload`,
+  {
+    method: "POST",
+    body: uploadData,
+  },
+);
 
         window.location.href = `Confirmation.html?token=${encodeURIComponent(token)}`;
       });

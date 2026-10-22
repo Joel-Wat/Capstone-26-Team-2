@@ -5,6 +5,8 @@ import cors from "cors";
 import crypto from "crypto";
 import dotenv from "dotenv";
 import { SecretsManager } from "@mondaycom/apps-sdk";
+import multer from "multer";
+import { fileTypeFromBuffer } from "file-type";
 
 dotenv.config();
 
@@ -41,6 +43,13 @@ app.use(cors());
 app.use(express.json());
 
 const forms = new Map();
+
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 5 * 1024 * 1024,
+  },
+});
 
 //initial health check of the Form
 app.get("/api/health", (req, res) => {
@@ -402,6 +411,166 @@ app.post("/api/forms/:token/submit", async (req, res) => {
   }
 });
 
+// Fourth API for File Upload
+app.post("/api/forms/:token/upload", upload.single("serviceSketch"), async (req, res) => {
+  try {
+    const { token } = req.params;
+    const form = forms.get(token);
+
+    if (!form) {
+      return res.status(404).json({
+        error: "Form doesn't exist",
+      });
+    }
+
+    if (!req.file) {
+      return res.status(400).json({
+        error: "No file was uploaded",
+      });
+    }
+
+  const allowedTypes = [
+  "image/jpeg",
+  "image/png",
+  "application/pdf",
+  ];
+
+  if (!allowedTypes.includes(req.file.mimetype)){
+    return res.status(400).json({
+          error: "Invalid file type",
+    });
+  }
+
+  const detectedType = await fileTypeFromBuffer(req.file.buffer);
+
+if (!detectedType || !allowedTypes.includes(detectedType.mime) || req.file.mimetype !== detectedType.mime){
+  return res.status(400).json({
+    error: "File contents do not match an allowed file type",
+  });
+}
+
+const mondayItemId = form.mondayItemId;
+
+if (!mondayItemId) {
+  return res.status(500).json({
+    error: "Monday item ID could not be found",
+  });
+}
+
+const mutation = `
+  mutation ($file: File!, $itemId: ID!, $columnId: String!) {
+    add_file_to_column(
+      file: $file
+      item_id: $itemId
+      column_id: $columnId
+    ) {
+      id
+    }
+  }
+`;
+
+const formData = new FormData();
+
+formData.append("query", mutation);
+
+formData.append("variables[itemId]", String(mondayItemId));
+
+formData.append("variables[columnId]", "file_mm7wx8c4");
+
+const fileBlob = new Blob([req.file.buffer], {
+  type: req.file.mimetype,
+});
+
+formData.append("variables[file]", fileBlob, req.file.originalname);
+
+const response = await fetch("https://api.monday.com/v2/file", {
+  method: "POST",
+  headers: {
+    Authorization: MONDAY_API_TOKEN,
+    "API-Version": "2026-07",
+  },
+  body: formData,
+});
+
+const data = await response.json();
+
+if (!response.ok || data.errors?.length) {
+  console.error("Monday file upload failed:", {
+    status: response.status,
+    errors: data.errors,
+    response: data,
+  });
+
+  return res.status(502).json({
+    error: "Failed to upload file to Monday.com",
+  });
+}
+
+const fileId = data.data?.add_file_to_column?.id;
+
+if (!fileId){
+  return res.status(502).json({
+    error: "Monday.com did not return a file ID",
+  })
+} else {
+  return res.status(200).json({
+  message: "File uploaded successfully",
+  fileId: fileId,
+});
+}
+
+  } catch (error) {
+  console.error("File upload error:", error);
+
+  return res.status(500).json({
+    error: "An unexpected error occurred during file upload",
+  });
+}
+
+})
+
+app.use((err, req, res, next) => {
+  if (err instanceof multer.MulterError) {
+    if (err.code === "LIMIT_FILE_SIZE") {
+      return res.status(413).json({
+        error: "File must be smaller than 5 MB",
+      });
+    }
+
+    return res.status(400).json({
+      error: "Invalid file upload",
+    });
+  }
+
+  next(err);
+});
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! MONDAY API TESTS, WILL REMOVE/COMMENT OUT !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 /*
@@ -544,7 +713,7 @@ app.post("/api/monday/test-status", async (req, res) => {
   }
 }); */
 
-app.get("/api/monday/board-structure", async (req, res) => {
+/* app.get("/api/monday/board-structure", async (req, res) => {
   try {
     const query = `
       query ($boardId: [ID!]) {
@@ -591,6 +760,4 @@ app.get("/api/monday/board-structure", async (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+ */
