@@ -26,19 +26,47 @@
 
         <p class="buttonContainer">
           <button class="back" type="button" id="backBtn">Back</button>
-          <button type="submit">Continue</button>
+          <button type="submit" id="continueBtn">Continue</button>
         </p>
       </form>
     </div>
 
     <script>
       const form = document.getElementById("vendorForm");
+      const fileInput = document.getElementById("serviceSketch");
 
+fileInput.addEventListener("change", () => {
+  const selectedFile = fileInput.files[0];
+
+  const maxFileSize = 5 * 1024 * 1024;
+  const allowedTypes = [
+    "image/jpeg",
+    "image/png",
+    "application/pdf",
+  ];
+
+  if (!selectedFile) {
+    return;
+  }
+
+  if (selectedFile.size > maxFileSize) {
+    alert("File must be smaller than 5 MB");
+    fileInput.value = "";
+    return;
+  }
+
+  if (!allowedTypes.includes(selectedFile.type)) {
+    alert("Only PNG, JPG and PDF files are allowed");
+    fileInput.value = "";
+    return;
+  }
+});
       const params = new URLSearchParams(window.location.search);
       const token = params.get("token");
 
       document.getElementById("backBtn").addEventListener("click", () => {
         const serviceAnswers = Object.fromEntries(new FormData(form));
+        delete serviceAnswers.serviceSketch;
 
         sessionStorage.setItem(
           "serviceAnswers",
@@ -60,7 +88,7 @@
         }
       }
 
-      form.addEventListener("submit", (event) => {
+      form.addEventListener("submit", async (event) => {
         event.preventDefault();
 
         if (!token) {
@@ -69,12 +97,43 @@
         }
 
         const serviceAnswers = Object.fromEntries(new FormData(event.target));
+        delete serviceAnswers.serviceSketch;
 
         sessionStorage.setItem(
           "serviceAnswers",
           JSON.stringify(serviceAnswers),
         );
+        const selectedFile = fileInput.files[0];
 
+if (!selectedFile) {
+  alert("Please upload a Location/Service Sketch");
+  return;
+}
+
+const uploadData = new FormData();
+uploadData.append("serviceSketch", selectedFile);
+
+try {
+  const response = await fetch(
+    `https://c1b48-service-36976642-e877d2ab.au.monday.app/api/forms/${encodeURIComponent(token)}/upload`,
+    {
+      method: "POST",
+      body: uploadData,
+    },
+  );
+
+  if (!response.ok) {
+    alert("File upload failed. Please try again.");
+    return;
+  }
+} catch (error) {
+  console.error("Upload error:", error);
+  alert("Could not connect to the server.");
+  return;
+}
+finally {
+  continueBtn.disabled = false;
+}
         window.location.href = `https://grandprixecosystems.web.app/Confirmation.html?token=${encodeURIComponent(token)}`;
       });
     </script>
