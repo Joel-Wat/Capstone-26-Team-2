@@ -159,8 +159,65 @@ button:focus-visible {
 .buttonContainer button {
   width: min(40%, 220px);
 }
+.fileUpload {
+    margin: 20px 0;
+}
 
-@media (max-width: 768px) {
+.fileUpload > label:first-child {
+    display: block;
+    margin-bottom: 10px;
+    color: white;
+    font-weight: bold;
+}
+
+.uploadBox {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-height: 160px;
+    padding: 20px;
+    background: #2b1c47;
+    border: 2px dashed #a88be0;
+    border-radius: 6px;
+    cursor: pointer;
+    text-align: center;
+}
+
+.uploadIcon {
+    font-size: 40px;
+    color: white;
+}
+
+.uploadText {
+    color: #4da6ff;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.uploadHint {
+    color: #c5bdd5;
+    font-size: 13px;
+}
+
+.fileUpload input[type="file"] {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    opacity: 0;
+}
+
+.uploadBox:hover {
+    background: #352451;
+    border-color: #c3a5f5;
+}
+
+.fileUpload:focus-within .uploadBox {
+    outline: 2px solid white;
+    outline-offset: 3px;
+}@media (max-width: 768px) {
   body {
     background-attachment: scroll;
   }
