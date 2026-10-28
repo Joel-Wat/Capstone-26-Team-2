@@ -14,7 +14,20 @@
 
       <form id="vendorForm">
         <p>
-          <label for="emac-number">EMAC Number *</label>
+          <label for="emac-number">
+            EMAC Number <span style="color: red">*</span>
+          </label>
+          <small
+            style="
+              display: block;
+              color: #888;
+              margin-bottom: 5px;
+              font-size: 0.8em;
+            "
+          >
+            Enter the EMAC reference number provided for your command service
+            request.
+          </small>
           <input
             type="text"
             id="emac-number"
@@ -26,7 +39,20 @@
         </p>
 
         <p>
-          <label for="emac-description">EMAC Description *</label>
+          <label for="emac-description">
+            EMAC Description <span style="color: red">*</span>
+          </label>
+          <small
+            style="
+              display: block;
+              color: #888;
+              margin-bottom: 5px;
+              font-size: 0.8em;
+            "
+          >
+            Briefly describe the command service or equipment you are requesting
+            and what it will be used for.
+          </small>
           <input
             type="text"
             id="emac-description"
@@ -36,7 +62,21 @@
         </p>
 
         <p>
-          <label for="additional-info">Additional Information *</label>
+          <label for="additional-info">
+            Additional Information <span style="color: red">*</span>
+          </label>
+          <small
+            style="
+              display: block;
+              color: #888;
+              margin-bottom: 5px;
+              font-size: 0.8em;
+            "
+          >
+            Provide any additional details or special requirements, such as
+            where the service will be used or when it is needed. Enter "N/A" if
+            none.
+          </small>
           <input
             type="text"
             id="additional-info"
@@ -46,8 +86,21 @@
         </p>
 
         <div class="fileUpload">
-          <label for="serviceSketch">Location/Service Sketch *</label>
-
+          <label for="serviceSketch">
+            Location/Service Sketch <span style="color: red">*</span>
+          </label>
+          <small
+            style="
+              display: block;
+              color: #888;
+              margin-bottom: 5px;
+              font-size: 0.8em;
+            "
+          >
+            Upload a floor plan, map, or sketch showing where the command
+            service or equipment is required. Accepted formats: PNG, JPG, or PDF
+            (maximum 5 MB).
+          </small>
           <input
             type="file"
             id="serviceSketch"
