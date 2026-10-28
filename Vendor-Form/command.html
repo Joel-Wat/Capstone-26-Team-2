@@ -86,31 +86,22 @@
         </p>
 
         <div class="fileUpload">
-          <label for="serviceSketch">
-            Location/Service Sketch <span style="color: red">*</span>
-          </label>
-          <small
-            style="
-              display: block;
-              color: #888;
-              margin-bottom: 5px;
-              font-size: 0.8em;
-            "
-          >
-            Upload a floor plan, map, or sketch showing where the command
-            service or equipment is required. Accepted formats: PNG, JPG, or PDF
-            (maximum 5 MB).
-          </small>
-          <input
-            type="file"
-            id="serviceSketch"
-            name="serviceSketch"
-            accept=".png,.jpg,.jpeg,.pdf"
-            required
-          />
-        </div>
+  <label for="serviceSketch">Location/Service Sketch *</label>
 
-        <p class="buttonContainer">
+  <label for="serviceSketch" class="uploadBox">
+    <span class="uploadIcon">⇧</span>
+    <span class="uploadText">Choose a file to upload</span>
+    <span class="uploadHint">PNG, JPG or PDF (Max 5 MB)</span>
+  </label>
+
+  <input
+    type="file"
+    id="serviceSketch"
+    name="serviceSketch"
+    accept=".png,.jpg,.jpeg,.pdf"
+    required
+  />
+</div> <p class="buttonContainer">
           <button class="back" type="button" id="backBtn">Back</button>
           <button type="submit" id="continueBtn">Continue</button>
         </p>
