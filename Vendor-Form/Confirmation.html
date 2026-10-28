@@ -77,6 +77,19 @@
           p.append(labelEl, valueEl);
           summary.append(p);
         }
+
+        // Display the uploaded file name
+        const sketchName = sessionStorage.getItem("serviceSketchName");
+
+        const p = document.createElement("p");
+        const labelEl = document.createElement("label");
+        const valueEl = document.createElement("label");
+
+        labelEl.textContent = "Location/Service Sketch";
+        valueEl.textContent = sketchName || "No file selected";
+
+        p.append(labelEl, valueEl);
+        summary.append(p);
       }
       // Sends to user back to the page they came from if they click the back button
       document.getElementById("backBtn").addEventListener("click", () => {
@@ -110,6 +123,7 @@
 
           sessionStorage.removeItem("contactDetails");
           sessionStorage.removeItem("serviceAnswers");
+          sessionStorage.removeItem("serviceSketchName");
 
           window.location.href = `https://grandprixecosystems.web.app/submit.html?token=${encodeURIComponent(token)}`;
         } catch (error) {
