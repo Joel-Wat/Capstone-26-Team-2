@@ -1,4 +1,3 @@
-
 /* Code for the backend side of the files */
 
 import express from "express";
@@ -212,8 +211,7 @@ app.get("/api/forms/:token", (req, res) => {
   }
 });
 
-
- //Third API for posting the form to the user
+//Third API for posting the form to the user
 app.post("/api/forms/:token/submit", async (req, res) => {
   const { token } = req.params;
   const form = forms.get(token);
@@ -416,7 +414,6 @@ app.post("/api/forms/:token/submit", async (req, res) => {
   }
 });
 
-
 app.post(
   "/api/forms/:token/upload",
   (req, res, next) => {
@@ -455,11 +452,7 @@ app.post(
       });
     }
 
-    const allowedTypes = [
-      "image/jpeg",
-      "image/png",
-      "application/pdf",
-    ];
+    const allowedTypes = ["image/jpeg", "image/png", "application/pdf"];
 
     if (!allowedTypes.includes(req.file.mimetype)) {
       return res.status(400).json({
@@ -496,10 +489,7 @@ app.post(
 
       const uploadData = new FormData();
 
-      uploadData.append(
-        "query",
-        mutation,
-      );
+      uploadData.append("query", mutation);
 
       uploadData.append(
         "variables",
@@ -513,32 +503,22 @@ app.post(
       uploadData.append(
         "map",
         JSON.stringify({
-          "0": ["variables.file"],
+          0: ["variables.file"],
         }),
       );
 
-      const fileBlob = new Blob(
-        [req.file.buffer],
-        { type: detectedType.mime },
-      );
+      const fileBlob = new Blob([req.file.buffer], { type: detectedType.mime });
 
-      uploadData.append(
-        "0",
-        fileBlob,
-        req.file.originalname,
-      );
+      uploadData.append("0", fileBlob, req.file.originalname);
 
-      const response = await fetch(
-        "https://api.monday.com/v2/file",
-        {
-          method: "POST",
-          headers: {
-            Authorization: MONDAY_API_TOKEN,
-            "API-Version": "2026-07",
-          },
-          body: uploadData,
+      const response = await fetch("https://api.monday.com/v2/file", {
+        method: "POST",
+        headers: {
+          Authorization: MONDAY_API_TOKEN,
+          "API-Version": "2026-07",
         },
-      );
+        body: uploadData,
+      });
 
       const data = await response.json();
 
@@ -568,32 +548,9 @@ app.post(
   },
 );
 
-
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! MONDAY API TESTS, WILL REMOVE/COMMENT OUT !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 

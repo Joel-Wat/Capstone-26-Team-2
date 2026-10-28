@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="en">
   <head>
@@ -16,7 +15,7 @@
       <form id="vendorForm">
         <p>
           <label for="emac-number">
-            EMAC Number <span style="color: red;">*</span>
+            EMAC Number <span style="color: red">*</span>
           </label>
           <input
             type="text"
@@ -30,7 +29,7 @@
 
         <p>
           <label for="emac-description">
-            EMAC Description <span style="color: red;">*</span>
+            EMAC Description <span style="color: red">*</span>
           </label>
           <input
             type="text"
@@ -42,7 +41,7 @@
 
         <p>
           <label for="additional-info">
-            Additional Information <span style="color: red;">*</span>
+            Additional Information <span style="color: red">*</span>
           </label>
           <input
             type="text"
@@ -54,7 +53,7 @@
 
         <div class="fileUpload">
           <label for="serviceSketch">
-            Location/Service Sketch <span style="color: red;">*</span>
+            Location/Service Sketch <span style="color: red">*</span>
           </label>
 
           <input
@@ -79,11 +78,7 @@
       const continueBtn = document.getElementById("continueBtn");
 
       const maxFileSize = 5 * 1024 * 1024;
-      const allowedTypes = [
-        "image/jpeg",
-        "image/png",
-        "application/pdf",
-      ];
+      const allowedTypes = ["image/jpeg", "image/png", "application/pdf"];
 
       fileInput.addEventListener("change", () => {
         const selectedFile = fileInput.files[0];
@@ -141,9 +136,7 @@
           return;
         }
 
-        const serviceAnswers = Object.fromEntries(
-          new FormData(event.target),
-        );
+        const serviceAnswers = Object.fromEntries(new FormData(event.target));
 
         delete serviceAnswers.serviceSketch;
 

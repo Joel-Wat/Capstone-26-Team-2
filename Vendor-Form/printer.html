@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="en">
   <head>
@@ -54,11 +53,7 @@
         const selectedFile = fileInput.files[0];
 
         const maxFileSize = 5 * 1024 * 1024;
-        const allowedTypes = [
-          "image/jpeg",
-          "image/png",
-          "application/pdf",
-        ];
+        const allowedTypes = ["image/jpeg", "image/png", "application/pdf"];
 
         if (!selectedFile) {
           return;
@@ -112,9 +107,7 @@
           return;
         }
 
-        const serviceAnswers = Object.fromEntries(
-          new FormData(event.target),
-        );
+        const serviceAnswers = Object.fromEntries(new FormData(event.target));
 
         delete serviceAnswers.serviceSketch;
 
@@ -131,11 +124,7 @@
         }
 
         const maxFileSize = 5 * 1024 * 1024;
-        const allowedTypes = [
-          "image/jpeg",
-          "image/png",
-          "application/pdf",
-        ];
+        const allowedTypes = ["image/jpeg", "image/png", "application/pdf"];
 
         if (
           selectedFile.size > maxFileSize ||
