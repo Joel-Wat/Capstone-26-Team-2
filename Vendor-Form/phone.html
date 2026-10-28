@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html lang="en">
   <head>
@@ -11,9 +12,12 @@
   <body class="formPage">
     <div id="root">
       <h1>GP26 Phone</h1>
+
       <form id="vendorForm">
         <p>
-          <label for="emac-number">EMAC Number *</label>
+          <label for="emac-number">
+            EMAC Number <span style="color: red;">*</span>
+          </label>
           <input
             type="text"
             id="emac-number"
@@ -23,8 +27,11 @@
             pattern="[0-9]+"
           />
         </p>
+
         <p>
-          <label for="emac-description">EMAC Description *</label>
+          <label for="emac-description">
+            EMAC Description <span style="color: red;">*</span>
+          </label>
           <input
             type="text"
             id="emac-description"
@@ -32,8 +39,11 @@
             required
           />
         </p>
+
         <p>
-          <label for="additional-info">Additional Information *</label>
+          <label for="additional-info">
+            Additional Information <span style="color: red;">*</span>
+          </label>
           <input
             type="text"
             id="additional-info"
@@ -41,17 +51,21 @@
             required
           />
         </p>
-        <div class="fileUpload">
-  <label for="serviceSketch">Location/Service Sketch *</label>
 
-  <input
-    type="file"
-    id="serviceSketch"
-    name="serviceSketch"
-    accept=".png,.jpg,.jpeg,.pdf"
-    required
-  />
-</div>
+        <div class="fileUpload">
+          <label for="serviceSketch">
+            Location/Service Sketch <span style="color: red;">*</span>
+          </label>
+
+          <input
+            type="file"
+            id="serviceSketch"
+            name="serviceSketch"
+            accept=".png,.jpg,.jpeg,.pdf"
+            required
+          />
+        </div>
+
         <p class="buttonContainer">
           <button class="back" type="button" id="backBtn">Back</button>
           <button type="submit" id="continueBtn">Continue</button>
@@ -61,36 +75,35 @@
 
     <script>
       const form = document.getElementById("vendorForm");
-
       const fileInput = document.getElementById("serviceSketch");
+      const continueBtn = document.getElementById("continueBtn");
 
-fileInput.addEventListener("change", () => {
-  const selectedFile = fileInput.files[0];
+      const maxFileSize = 5 * 1024 * 1024;
+      const allowedTypes = [
+        "image/jpeg",
+        "image/png",
+        "application/pdf",
+      ];
 
-  const maxFileSize = 5 * 1024 * 1024;
-  const allowedTypes = [
-    "image/jpeg",
-    "image/png",
-    "application/pdf",
-  ];
+      fileInput.addEventListener("change", () => {
+        const selectedFile = fileInput.files[0];
 
-  if (!selectedFile) {
-    return;
-  }
+        if (!selectedFile) {
+          return;
+        }
 
-  if (selectedFile.size > maxFileSize) {
-    alert("File must be smaller than 5 MB");
-    fileInput.value = "";
-    return;
-  }
+        if (selectedFile.size > maxFileSize) {
+          alert("File must be smaller than 5 MB");
+          fileInput.value = "";
+          return;
+        }
 
-  if (!allowedTypes.includes(selectedFile.type)) {
-    alert("Only PNG, JPG and PDF files are allowed");
-    fileInput.value = "";
-    return;
-  }
-});
-
+        if (!allowedTypes.includes(selectedFile.type)) {
+          alert("Only PNG, JPG and PDF files are allowed");
+          fileInput.value = "";
+          return;
+        }
+      });
 
       const params = new URLSearchParams(window.location.search);
       const token = params.get("token");
@@ -99,6 +112,7 @@ fileInput.addEventListener("change", () => {
         const serviceAnswers = Object.fromEntries(new FormData(form));
 
         delete serviceAnswers.serviceSketch;
+
         sessionStorage.setItem(
           "serviceAnswers",
           JSON.stringify(serviceAnswers),
@@ -114,7 +128,7 @@ fileInput.addEventListener("change", () => {
       for (const [name, value] of Object.entries(savedAnswers)) {
         const field = form.elements.namedItem(name);
 
-        if (field && "value" in field) {
+        if (field && field.type !== "file" && "value" in field) {
           field.value = value;
         }
       }
@@ -127,7 +141,9 @@ fileInput.addEventListener("change", () => {
           return;
         }
 
-        const serviceAnswers = Object.fromEntries(new FormData(event.target));
+        const serviceAnswers = Object.fromEntries(
+          new FormData(event.target),
+        );
 
         delete serviceAnswers.serviceSketch;
 
@@ -135,41 +151,50 @@ fileInput.addEventListener("change", () => {
           "serviceAnswers",
           JSON.stringify(serviceAnswers),
         );
+
         const selectedFile = fileInput.files[0];
 
-if (!selectedFile) {
-  alert("Please upload a Location/Service Sketch");
-  return;
-}
+        if (!selectedFile) {
+          alert("Please upload a Location/Service Sketch");
+          return;
+        }
 
-const uploadData = new FormData();
-uploadData.append("serviceSketch", selectedFile);
+        if (selectedFile.size > maxFileSize) {
+          alert("File must be smaller than 5 MB");
+          return;
+        }
 
-const continueBtn = document.getElementById("continueBtn");
-continueBtn.disabled = true;
+        if (!allowedTypes.includes(selectedFile.type)) {
+          alert("Only PNG, JPG and PDF files are allowed");
+          return;
+        }
 
-try {
-  const response = await fetch(
-    `https://c1b48-service-36976642-e877d2ab.au.monday.app/api/forms/${encodeURIComponent(token)}/upload`,
-    {
-      method: "POST",
-      body: uploadData,
-    },
-  );
+        const uploadData = new FormData();
+        uploadData.append("serviceSketch", selectedFile);
 
-  if (!response.ok) {
-    alert("File upload failed. Please try again.");
-    return;
-  }
-} catch (error) {
-  console.error("Upload error:", error);
-  alert("Could not connect to the server.");
-  return;
-}
-finally {
-  continueBtn.disabled = false;
-}
-        window.location.href = `https://grandprixecosystems.web.app/Confirmation.html?token=${encodeURIComponent(token)}`;
+        continueBtn.disabled = true;
+
+        try {
+          const response = await fetch(
+            `https://c1b48-service-36976642-e877d2ab.au.monday.app/api/forms/${encodeURIComponent(token)}/upload`,
+            {
+              method: "POST",
+              body: uploadData,
+            },
+          );
+
+          if (!response.ok) {
+            alert("File upload failed. Please try again.");
+            return;
+          }
+
+          window.location.href = `https://grandprixecosystems.web.app/Confirmation.html?token=${encodeURIComponent(token)}`;
+        } catch (error) {
+          console.error("Upload error:", error);
+          alert("Could not connect to the server.");
+        } finally {
+          continueBtn.disabled = false;
+        }
       });
     </script>
   </body>

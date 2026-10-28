@@ -1,12 +1,13 @@
+
 /* Code for the backend side of the files */
 
 import express from "express";
 import cors from "cors";
 import crypto from "crypto";
 import dotenv from "dotenv";
-import { SecretsManager } from "@mondaycom/apps-sdk";
 import multer from "multer";
 import { fileTypeFromBuffer } from "file-type";
+import { SecretsManager } from "@mondaycom/apps-sdk";
 
 dotenv.config();
 
@@ -77,8 +78,8 @@ app.post("/api/forms", async (req, res) => {
     const mutation = `
       mutation ($boardId: ID! , $vendorName: String! ){
         create_item(
-        board_id: $boardId
-        item_name: $vendorName
+          board_id: $boardId
+          item_name: $vendorName
         ) {
           id
           name
@@ -132,7 +133,7 @@ app.post("/api/forms", async (req, res) => {
           item_id: $itemId
           column_values: $columnValues
         ) {
-        id
+          id
         }
       }
     `;
@@ -211,7 +212,8 @@ app.get("/api/forms/:token", (req, res) => {
   }
 });
 
-//Third API for posting the form to the user
+
+ //Third API for posting the form to the user
 app.post("/api/forms/:token/submit", async (req, res) => {
   const { token } = req.params;
   const form = forms.get(token);
@@ -263,15 +265,17 @@ app.post("/api/forms/:token/submit", async (req, res) => {
 
     if (answers.phone) {
       const isValidPhone = /^\+?[0-9 ]+$/.test(answers.phone);
+
       if (!isValidPhone) {
         return res.status(400).json({
           error: "Invalid phone number",
         });
-      } else
+      } else {
         columnValues.phone_mm7yvb7b = {
           phone: answers.phone,
           countryShortName: "AU",
         };
+      }
     }
 
     let emacNumber = answers.emacNumber;
@@ -323,10 +327,10 @@ app.post("/api/forms/:token/submit", async (req, res) => {
           item_id: $itemId
           column_values: $columnValues
         ) {
-        id
+          id
+        }
       }
-    }
-  `;
+    `;
 
     const response = await fetch("https://api.monday.com/v2", {
       method: "POST",
@@ -357,16 +361,17 @@ app.post("/api/forms/:token/submit", async (req, res) => {
     ) {
       throw new Error(JSON.stringify(data));
     }
+
     const groupMutation = `
-  mutation ($itemId: ID!, $groupId: String!) {
-    move_item_to_group(
-      item_id: $itemId
-      group_id: $groupId
-    ) {
-      id
-    }
-  }
-`;
+      mutation ($itemId: ID!, $groupId: String!) {
+        move_item_to_group(
+          item_id: $itemId
+          group_id: $groupId
+        ) {
+          id
+        }
+      }
+    `;
 
     const groupResponse = await fetch("https://api.monday.com/v2", {
       method: "POST",
@@ -397,7 +402,7 @@ app.post("/api/forms/:token/submit", async (req, res) => {
     form.answers = answers;
     form.status = "submitted";
 
-    return res.status(200).json({
+    res.status(200).json({
       vendorName: form.vendorName,
       status: form.status,
       answers: form.answers,
@@ -406,144 +411,163 @@ app.post("/api/forms/:token/submit", async (req, res) => {
     console.error("Monday submission error:", error);
 
     return res.status(500).json({
-      error: "Could not update Monday",
+      error: "Could not submit form to Monday.com",
     });
   }
 });
 
-// Fourth API for File Upload
-app.post("/api/forms/:token/upload", upload.single("serviceSketch"), async (req, res) => {
-  try {
+
+app.post(
+  "/api/forms/:token/upload",
+  (req, res, next) => {
+    upload.single("serviceSketch")(req, res, (error) => {
+      if (error) {
+        if (error instanceof multer.MulterError) {
+          return res.status(400).json({
+            error:
+              error.code === "LIMIT_FILE_SIZE"
+                ? "File must be smaller than 5 MB"
+                : error.message,
+          });
+        }
+
+        return res.status(400).json({
+          error: "File upload failed",
+        });
+      }
+
+      next();
+    });
+  },
+  async (req, res) => {
     const { token } = req.params;
     const form = forms.get(token);
 
     if (!form) {
       return res.status(404).json({
-        error: "Form doesn't exist",
+        error: "Form not found",
       });
     }
 
     if (!req.file) {
       return res.status(400).json({
-        error: "No file was uploaded",
+        error: "Please upload a Location/Service Sketch",
       });
     }
 
-  const allowedTypes = [
-  "image/jpeg",
-  "image/png",
-  "application/pdf",
-  ];
+    const allowedTypes = [
+      "image/jpeg",
+      "image/png",
+      "application/pdf",
+    ];
 
-  if (!allowedTypes.includes(req.file.mimetype)){
-    return res.status(400).json({
+    if (!allowedTypes.includes(req.file.mimetype)) {
+      return res.status(400).json({
+        error: "Only PNG, JPG and PDF files are allowed",
+      });
+    }
+
+    try {
+      const detectedType = await fileTypeFromBuffer(req.file.buffer);
+
+      if (!detectedType || !allowedTypes.includes(detectedType.mime)) {
+        return res.status(400).json({
           error: "Invalid file type",
-    });
-  }
+        });
+      }
 
-  const detectedType = await fileTypeFromBuffer(req.file.buffer);
+      if (detectedType.mime !== req.file.mimetype) {
+        return res.status(400).json({
+          error: "File type does not match file contents",
+        });
+      }
 
-if (!detectedType || !allowedTypes.includes(detectedType.mime) || req.file.mimetype !== detectedType.mime){
-  return res.status(400).json({
-    error: "File contents do not match an allowed file type",
-  });
-}
+      const mutation = `
+        mutation ($file: File!, $itemId: ID!, $columnId: String!) {
+          add_file_to_column(
+            file: $file
+            item_id: $itemId
+            column_id: $columnId
+          ) {
+            id
+          }
+        }
+      `;
 
-const mondayItemId = form.mondayItemId;
+      const uploadData = new FormData();
 
-if (!mondayItemId) {
-  return res.status(500).json({
-    error: "Monday item ID could not be found",
-  });
-}
+      uploadData.append(
+        "query",
+        mutation,
+      );
 
-const mutation = `
-  mutation ($file: File!, $itemId: ID!, $columnId: String!) {
-    add_file_to_column(
-      file: $file
-      item_id: $itemId
-      column_id: $columnId
-    ) {
-      id
-    }
-  }
-`;
+      uploadData.append(
+        "variables",
+        JSON.stringify({
+          itemId: form.mondayItemId,
+          columnId: "file_mm7wx8c4",
+          file: null,
+        }),
+      );
 
-const formData = new FormData();
+      uploadData.append(
+        "map",
+        JSON.stringify({
+          "0": ["variables.file"],
+        }),
+      );
 
-formData.append("query", mutation);
+      const fileBlob = new Blob(
+        [req.file.buffer],
+        { type: detectedType.mime },
+      );
 
-formData.append("variables[itemId]", String(mondayItemId));
+      uploadData.append(
+        "0",
+        fileBlob,
+        req.file.originalname,
+      );
 
-formData.append("variables[columnId]", "file_mm7wx8c4");
+      const response = await fetch(
+        "https://api.monday.com/v2/file",
+        {
+          method: "POST",
+          headers: {
+            Authorization: MONDAY_API_TOKEN,
+            "API-Version": "2026-07",
+          },
+          body: uploadData,
+        },
+      );
 
-const fileBlob = new Blob([req.file.buffer], {
-  type: req.file.mimetype,
-});
+      const data = await response.json();
 
-formData.append("variables[file]", fileBlob, req.file.originalname);
+      if (
+        !response.ok ||
+        data.errors?.length ||
+        !data.data?.add_file_to_column?.id
+      ) {
+        console.error("Monday file upload failed:", data);
 
-const response = await fetch("https://api.monday.com/v2/file", {
-  method: "POST",
-  headers: {
-    Authorization: MONDAY_API_TOKEN,
-    "API-Version": "2026-07",
-  },
-  body: formData,
-});
+        return res.status(500).json({
+          error: "Could not upload file to Monday.com",
+        });
+      }
 
-const data = await response.json();
+      return res.status(200).json({
+        message: "File uploaded successfully",
+        fileId: data.data.add_file_to_column.id,
+      });
+    } catch (error) {
+      console.error("File upload error:", error);
 
-if (!response.ok || data.errors?.length) {
-  console.error("Monday file upload failed:", {
-    status: response.status,
-    errors: data.errors,
-    response: data,
-  });
-
-  return res.status(502).json({
-    error: "Failed to upload file to Monday.com",
-  });
-}
-
-const fileId = data.data?.add_file_to_column?.id;
-
-if (!fileId){
-  return res.status(502).json({
-    error: "Monday.com did not return a file ID",
-  })
-} else {
-  return res.status(200).json({
-  message: "File uploaded successfully",
-  fileId: fileId,
-});
-}
-
-  } catch (error) {
-  console.error("File upload error:", error);
-
-  return res.status(500).json({
-    error: "An unexpected error occurred during file upload",
-  });
-}
-
-})
-
-app.use((err, req, res, next) => {
-  if (err instanceof multer.MulterError) {
-    if (err.code === "LIMIT_FILE_SIZE") {
-      return res.status(413).json({
-        error: "File must be smaller than 5 MB",
+      return res.status(500).json({
+        error: "File upload failed",
       });
     }
+  },
+);
 
-    return res.status(400).json({
-      error: "Invalid file upload",
-    });
-  }
-
-  next(err);
-});
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
@@ -627,8 +651,8 @@ app.post("/api/monday/test-item", async (req, res) => {
     const mutation = `
       mutation ($boardId: ID! , $vendorName: String! ){
         create_item(
-        board_id: $boardId
-        item_name: $vendorName
+          board_id: $boardId
+          item_name: $vendorName
         ) {
           id
           name
@@ -667,16 +691,16 @@ app.post("/api/monday/test-item", async (req, res) => {
 app.post("/api/monday/test-status", async (req, res) => {
   try {
     const mutation = `
-  mutation ($boardId: ID! , $itemId: ID!, $columnValues: JSON! ) {
-    change_multiple_column_values(
-      board_id: $boardId
-      item_id: $itemId
-      column_values: $columnValues
-    ) {
-      id
-    }
-  }
-`;
+      mutation ($boardId: ID! , $itemId: ID!, $columnValues: JSON! ) {
+        change_multiple_column_values(
+          board_id: $boardId
+          item_id: $itemId
+          column_values: $columnValues
+        ) {
+          id
+        }
+      }
+    `;
 
     const columnValues = {
       status: {
@@ -760,4 +784,4 @@ app.post("/api/monday/test-status", async (req, res) => {
   }
 });
 
- */
+*/
