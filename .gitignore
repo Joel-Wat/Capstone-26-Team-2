@@ -1,0 +1,6 @@
+.mappsrc
+node_modules/
+.env
+
+Backend/code.tar.gz
+Vendor-Form/.firebase/

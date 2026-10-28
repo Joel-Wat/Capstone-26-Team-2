@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>vendor-form</title>
+<link rel="stylesheet" href="style.css" />
+      <link rel="icon" type="image/png" href="/favicon.png?v=3" />
+</head>
+  <body class="formPage">
+    <div id="root" class="submitPanel">
+      <h1>Form Ref: <span id="referenceNumber">Loading...</span></h1>
+      <h1>Your form has been submitted!</h1>
+      <p>
+        <label
+          >Thank you for providing your service requirements. Your submission
+          has been recieved. You may now close this page.</label
+        >
+      </p>
+    </div>
+    <script>
+      const params = new URLSearchParams(window.location.search);
+      const token = params.get("token");
+
+      const API_BASE = "https://c1b48-service-36976642-e877d2ab.au.monday.app";
+
+      async function loadReferenceNumber() {
+        try {
+          const response = await fetch(
+            `${API_BASE}/api/forms/${encodeURIComponent(token)}`,
+          );
+
+          const data = await response.json();
+          console.log("Token:", token);
+          console.log("Response status:", response.status);
+          console.log("API data:", data);
+          if (!response.ok || data.referenceNumber == null) {
+            throw new Error("Could not retrieve form reference number");
+          }
+          document.getElementById("referenceNumber").textContent =
+            `GP-${data.referenceNumber}`;
+        } catch {
+          document.getElementById("referenceNumber").textContent =
+            "Reference Unavailable";
+        }
+      }
+
+      loadReferenceNumber();
+    </script>
+  </body>
+</html>

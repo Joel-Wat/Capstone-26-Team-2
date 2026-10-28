@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>vendor-form</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="icon" type="image/png" href="/favicon.png?v=3" />
+</head>
+
+  <body class="formPage">
+    <div id="root">
+      <h1>GP26<br />DYNAMIC FORM</h1>
+
+      <form id="vendorForm">
+        <p>
+          <label for="name">
+            Contact Name <span style="color: red">*</span>
+          </label>
+          <input id="name" type="text" required />
+        </p>
+
+        <p>
+          <label for="phone">
+            Contact Number <span style="color: red">*</span>
+          </label>
+          <input
+            id="phone"
+            type="tel"
+            required
+            pattern="\+?[0-9 ]+"
+            title="Enter a valid phone number using digits, spaces, and an optional +"
+          />
+        </p>
+
+        <p>
+          <label for="email">
+            Email Address <span style="color: red">*</span>
+          </label>
+          <input id="email" type="email" required />
+        </p>
+
+        <p>
+          <label for="service">
+            Select a service <span style="color: red">*</span>
+          </label>
+          <select id="service" required>
+            <option value=""></option>
+            <option value="Telecommunications">Telecommunications</option>
+            <option value="Printer & Equipment">Printer & Equipment</option>
+            <option value="Event Technology">Event Technology</option>
+            <option value="Phones">Phones</option>
+          </select>
+        </p>
+
+        <p class="buttonContainer">
+          <button type="submit">Continue</button>
+        </p>
+      </form>
+    </div>
+
+    <script>
+      const form = document.getElementById("vendorForm");
+      const service = document.getElementById("service");
+
+      const params = new URLSearchParams(window.location.search);
+      const token = params.get("token");
+
+      const savedContactDetails = JSON.parse(
+        sessionStorage.getItem("contactDetails") || "null",
+      );
+
+      if (savedContactDetails) {
+        document.getElementById("name").value =
+          savedContactDetails.contactName || "";
+
+        document.getElementById("phone").value =
+          savedContactDetails.phone || "";
+
+        document.getElementById("email").value =
+          savedContactDetails.email || "";
+
+        document.getElementById("service").value =
+          savedContactDetails.service || "";
+      }
+
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+
+        if (!token) {
+          alert("Invalid form link.");
+          return;
+        }
+
+        const selectedService = service.value;
+
+        const contactDetails = {
+          contactName: document.getElementById("name").value.trim(),
+          phone: document.getElementById("phone").value.trim(),
+          email: document.getElementById("email").value.trim(),
+          service: selectedService,
+        };
+
+        if (
+          !contactDetails.contactName ||
+          !contactDetails.phone ||
+          !contactDetails.email ||
+          !selectedService
+        ) {
+          alert("Please complete all required fields.");
+          return;
+        }
+
+        const servicePages = {
+          Telecommunications: "telecom.html",
+          "Printer & Equipment": "printer.html",
+          "Event Technology": "command.html",
+          Phones: "phone.html",
+        };
+
+        const nextPage = servicePages[selectedService];
+
+        if (!nextPage) {
+          alert("Please select a valid service.");
+          return;
+        }
+
+        sessionStorage.setItem(
+          "contactDetails",
+          JSON.stringify(contactDetails),
+        );
+
+        sessionStorage.removeItem("serviceAnswers");
+
+        window.location.href = `${nextPage}?token=${encodeURIComponent(token)}`;
+      });
+    </script>
+  </body>
+</html>

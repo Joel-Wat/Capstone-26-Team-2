@@ -1,0 +1,300 @@
+:root {
+  --gp-dark: #2b1c47;
+  --gp-purple: #7b3fc6;
+  --gp-white: #ffffff;
+  --gp-input: #d9d9d9;
+  --gp-error: #ff0000;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  min-height: 100dvh;
+  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--gp-dark);
+  background-image: url("/background.png");
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  color: var(--gp-white);
+  overflow-x: hidden;
+}
+
+.formPage {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 3vh 2%;
+}
+
+.confPage {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 3vh 2%;
+}
+
+.formPage #root,
+.confPage #root {
+  width: min(100%, 640px);
+  padding: clamp(24px, 3.2vw, 50px);
+  background-color: var(--gp-dark);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.formPage #root {
+  max-height: 94vh;
+  max-height: 94dvh;
+  overflow-y: auto;
+}
+
+.confPage #root {
+  max-height: none;
+}
+
+.submitPanel {
+  width: min(100%, 760px) !important;
+  height: auto;
+}
+
+h1 {
+  margin: 0 0 20px;
+  font-size: clamp(28px, 3vw, 40px);
+  font-weight: 700;
+  line-height: 1.2;
+  text-align: center;
+  color: white;
+}
+
+form {
+  width: 100%;
+  min-width: 0;
+}
+
+form p {
+  margin: 0 0 20px;
+}
+
+label {
+  display: block;
+  margin-bottom: 8px;
+  color: white;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+input,
+select,
+textarea {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  border: 1px solid transparent;
+  border-radius: 2px;
+  padding: 14px 16px;
+  background-color: var(--gp-input);
+  color: var(--gp-dark);
+  font-family: inherit;
+  font-size: 16px;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: 2px solid var(--gp-purple);
+  outline-offset: 1px;
+  background-color: white;
+}
+
+button {
+  max-width: 100%;
+  min-height: 48px;
+  padding: 14px 20px;
+  border: none;
+  border-radius: 4px;
+  background-color: #7a4fd6;
+  color: white;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+button:hover {
+  background-color: #8f63e8;
+}
+
+button:focus-visible {
+  outline: 3px solid white;
+  outline-offset: 2px;
+}
+
+.back {
+  background-color: #524f59;
+}
+
+.buttonContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  text-align: center;
+}
+
+.buttonContainer button {
+  width: min(40%, 220px);
+}
+.fileUpload {
+  margin: 20px 0;
+}
+
+.fileUpload > label:first-child {
+  display: block;
+  margin-bottom: 10px;
+  color: white;
+  font-weight: bold;
+}
+
+.uploadBox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 160px;
+  padding: 20px;
+  background: #2b1c47;
+  border: 2px dashed #a88be0;
+  border-radius: 6px;
+  cursor: pointer;
+  text-align: center;
+}
+
+.uploadIcon {
+  font-size: 40px;
+  color: white;
+}
+
+.uploadText {
+  color: #4da6ff;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.uploadHint {
+  color: #c5bdd5;
+  font-size: 13px;
+}
+
+.fileUpload input[type="file"] {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  opacity: 0;
+}
+
+.uploadBox:hover {
+  background: #352451;
+  border-color: #c3a5f5;
+}
+
+.fileUpload:focus-within .uploadBox {
+    outline: 2px solid white;
+    outline-offset: 3px;
+}
+.fileUpload.hasFile .uploadBox {
+    border: 2px solid #4caf50;
+    background: #243d35;
+}
+
+.fileUpload.hasFile .uploadIcon,
+.fileUpload.hasFile .uploadText {
+    color: #4caf50;
+}
+
+.fileUpload.hasFile .uploadHint {
+    color: white;
+}
+@media (max-width: 768px) {
+  body {
+    background-attachment: scroll;
+  }
+
+  .formPage,
+  .confPage {
+    display: block;
+    padding: 20px 16px;
+  }
+
+  .formPage #root,
+  .confPage #root {
+    width: 100%;
+    max-height: none;
+    overflow: visible;
+    margin: 0 auto;
+    padding: 28px 22px;
+  }
+}
+
+@media (max-width: 768px) {
+  html,
+  body {
+    width: 100%;
+    margin: 0;
+    overflow-x: hidden;
+  }
+
+  .formPage,
+  .confPage {
+    min-height: 100vh;
+    padding: 20px 12px;
+    box-sizing: border-box;
+  }
+
+  .formPage #root,
+  .confPage #root {
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 28px 20px;
+    box-sizing: border-box;
+  }
+
+  h1 {
+    font-size: 28px;
+    line-height: 1.2;
+    overflow-wrap: break-word;
+  }
+
+  input,
+  select,
+  textarea {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .buttonContainer {
+    width: 100%;
+  }
+
+  .buttonContainer button {
+    width: 100%;
+  }
+}
